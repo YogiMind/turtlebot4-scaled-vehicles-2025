@@ -16,7 +16,7 @@
 - Detach the USB chords connected to the Raspberry Pi
 - Lift the top lid off carefully
 - You can use a plastic tool or your fingers to remove the SD Card 
-![Installation](../Assets/Images/SD_Card_RPi.png)
+![Installation](../Assets/Images/Installation/SD_Card_RPi.png)
 
 
 ## Step 4: Preparing the SD Card

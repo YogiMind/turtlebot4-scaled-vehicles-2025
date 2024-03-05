@@ -16,30 +16,19 @@
 - Detach the USB chords connected to the Raspberry Pi
 - Lift the top lid off carefully
 - You can use a plastic tool or your fingers to remove the SD Card 
-![Installation](../Assets/Images/Installation/SD_Card_RPi.png)
-
+<img src="../Assets/Images/Installation/SD_Card_RPi.png" width="300">
 
 ## Step 4: Preparing the SD Card
 - Download a SD-card flashing software such as Balena Etcher [here](https://etcher.balena.io/#download-etcher)
+- Run Balena Etcher and choose the OS Image to flash onto the SD Card. 
 
+## Step 6 Re-assemble the Turtlebot: 
+- Re-insert the SD-card in the Raspberry Pi
+- Assemble the Turtlebot
+- Place the Turtlebot on its doc and power it back on 
 
-## Step 4: Flashing the OS Image onto the SD Card
-- Using the Raspberry Pi Imager tool
-- Selecting the correct image and SD card
-- Starting the flashing process
+## Step 7: Set up the Turtlebot 
+- Install Turtlebot: 
+- - Install the Turtlebot using [Discovery Server](../Installation/Network-Discovery-Server)
+- - Install the Turtlebot using [CycloneDDS](../Installation/Network-Cyclone-DDS)
 
-## Step 5: Verifying the Flashing Process
-- Verifying the integrity of the flashed image
-- Checking for any errors
-
-## Step 6: Inserting the SD Card into the Turtlebot 4
-- Locating the SD card slot on the Turtlebot 4
-- Inserting the SD card correctly
-
-## Step 7: Powering on the Turtlebot 4
-- Connecting the power source
-- Booting up the Turtlebot 4
-
-## Conclusion
-- Final thoughts
-- Additional resources

@@ -6,6 +6,7 @@ Raspberry Pi 4B is an ARM-based single-board computer that is used by hobbyists 
 
 
 ## Specifications
+Specifications were gathered from [Raspberry Pi Webpage](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/specifications/)
 
 | Specification                                         | Details                                                   |
 |-------------------------------------------------------|-----------------------------------------------------------|
@@ -27,10 +28,6 @@ Raspberry Pi 4B is an ARM-based single-board computer that is used by hobbyists 
 | PoE                                                   | Power over Ethernet (PoE) enabled (requires separate PoE HAT) |
 | Operating Temperature                                 | 0 – 50 degrees C ambient                                   |
 
-
-## Features
-- Highlight the notable features of Raspberry Pi 4
-- Mention features like dual-display support, USB 3.0 ports, and Gigabit Ethernet
 
 ## Integration in Turtlebot 4
 - Explain how Raspberry Pi 4 is integrated into the Turtlebot 4 platform

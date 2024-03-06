@@ -21,4 +21,3 @@ This project is focused on the development and documentation of the TurtleBot4 r
 ## Software
 
 [The Software directory](Software) contains the software components of the TurtleBot4 and GulliView systems. (Note: Detailed information about the software components is not provided in the current workspace.)
-

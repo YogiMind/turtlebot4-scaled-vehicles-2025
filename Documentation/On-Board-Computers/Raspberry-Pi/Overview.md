@@ -29,20 +29,6 @@ Specifications were gathered from [Raspberry Pi Webpage](https://www.raspberrypi
 | Operating Temperature                                 | 0 – 50 degrees C ambient                                   |
 
 
-## Integration in Turtlebot 4
-- Explain how Raspberry Pi 4 is integrated into the Turtlebot 4 platform
-- Discuss its role in controlling the robot's functions and sensors
-
-## Software Support
-- Describe the software support available for Raspberry Pi 4
-- Mention operating systems and programming languages compatible with it
-
-## Use Cases
-- Provide examples of how Raspberry Pi 4 can be used in Turtlebot 4
-- Discuss applications such as autonomous navigation, computer vision, and data processing
-
-## Conclusion
-- Summarize the benefits and potential of using Raspberry Pi 4 in Turtlebot 4
-- Encourage further exploration and experimentation
-
+## Raspberry Pi 4B in Turtbot 4
+<img src="../Assets/Images/On-Board-Computers/RPi.png" width="300">
 

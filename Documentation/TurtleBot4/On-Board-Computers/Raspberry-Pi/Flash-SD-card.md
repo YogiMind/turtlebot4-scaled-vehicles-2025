@@ -16,7 +16,7 @@
 - Lift the top lid off carefully
 - You can use a plastic tool or your fingers to remove the SD Card 
 
-<img src="../Assets/Images/Installation/SD_Card_RPi.png" width="300">
+<img src="../../../Assets/Images/Turtlebot4/Hardware/SD_Card_RPi.png" width="300">
 
 ## Step 4: Preparing the SD Card
 - Download a SD-card flashing software such as Balena Etcher [here](https://etcher.balena.io/#download-etcher)
@@ -29,6 +29,6 @@
 
 ## Step 7: Set up the Turtlebot 
 ### Install Turtlebot: 
-- - Install the Turtlebot using [Discovery Server](../Installation/Network-Discovery-Server)
-- - Install the Turtlebot using [CycloneDDS](../Installation/Network-Cyclone-DDS)
+- - Install the Turtlebot using [Discovery Server](../../Setup/Network-Discovery-Server)
+- - Install the Turtlebot using [CycloneDDS](../../Setup//Network-Cyclone-DDS)
 

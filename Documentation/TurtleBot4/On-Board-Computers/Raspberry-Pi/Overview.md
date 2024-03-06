@@ -30,5 +30,5 @@ Specifications were gathered from [Raspberry Pi Webpage](https://www.raspberrypi
 
 
 ## Raspberry Pi 4B in Turtbot 4
-<img src="../Assets/Images/On-Board-Computers/RPi.png" width="300">
+<img src="../../../Assets/Images/TurtleBot4/On-Board-Computers/RPi.png" width="300">
 

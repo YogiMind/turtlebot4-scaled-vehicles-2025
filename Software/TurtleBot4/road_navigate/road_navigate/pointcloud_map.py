@@ -12,7 +12,7 @@ class PointCloudSubscriber(Node):
         super().__init__('point_cloud_subscriber')
         self.subscription = self.create_subscription(
             PointCloud2,
-            '/oak/points',
+            '/oakd/points',
             self.point_cloud_callback,
             rclpy.qos.QoSProfile(
                 reliability=rclpy.qos.QoSReliabilityPolicy.BEST_EFFORT, 
@@ -41,9 +41,9 @@ class PointCloudSubscriber(Node):
         
         avg_image = self.image_from_grid(base_grid)
 
-        filtered_image = self.filter_lines_ground(avg_image, 120)
+        filtered_image = self.filter_lines_ground(avg_image, 150)
         cohesion_road = self.road_post_processing(filtered_image)
-        road_img = self.filter_lines_ground(cohesion_road, 160)
+        road_img = self.filter_lines_ground(cohesion_road, 170)
 
         image_msg = self.bridge.cv2_to_imgmsg((road_img).astype(np.uint8), encoding='mono8')
         self.image_publisher.publish(image_msg)
@@ -113,7 +113,3 @@ def main(args=None):
     rclpy.spin(point_cloud_subscriber)
     point_cloud_subscriber.destroy_node()
     rclpy.shutdown()
-
-if __name__ == '__main__':
-    print("running road_flattner")
-    main()

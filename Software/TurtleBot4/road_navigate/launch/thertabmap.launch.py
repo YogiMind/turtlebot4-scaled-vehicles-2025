@@ -99,10 +99,11 @@ def generate_launch_description():
                                 "subscribe_user_data": False,
                                 "frame_id": 'oakd_link',
                                 "odom_frame_id": "odom",
-                                "odom_sensor_sync": False,
+                                "map_frame_id": "map",
+                                "publish_tf": False, 
+                                "odom_sensor_sync": False, #ska kanske vara true
                                 "wait_for_transform_duration": 0.5,
                                 "subscribe_odom_info": False,
-                                "publish_tf": False, 
                                 "approx_sync": True, 
                                 "Rtabmap/DetectionRate": "3.5", 
                                 "queue_size": 10,

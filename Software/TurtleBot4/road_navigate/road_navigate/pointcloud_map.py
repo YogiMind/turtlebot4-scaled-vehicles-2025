@@ -30,7 +30,6 @@ class PointCloudSubscriber(Node):
 
 
     def point_cloud_callback(self, msg):
-        self.get_logger().info('Received PointCloud2 message')
 
         base_grid = self.collect_points_into_grid(msg)
         

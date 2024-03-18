@@ -101,7 +101,7 @@ class PointCloudSubscriber(Node):
     def add_points_for_road(self, x,y,z,intensity, map_grid):
         
         if not (math.isnan(x) or math.isnan(y) or math.isnan(z) or math.isnan(intensity)):
-            if(z <= self.mapSizeForward and z >= 0 and x <= self.mapSizeWidth and x >= -self.mapSizeWidth):
+            if(z < (self.mapSizeForward) and z > 0 and x < (self.mapSizeWidth / 2) and x > (-(self.mapSizeWidth / 2))):
 
                 grid_x = int((x + self.mapSizeWidth / 2) / self.grid_resolution)
                 grid_y = int((z) / self.grid_resolution)

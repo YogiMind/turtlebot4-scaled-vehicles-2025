@@ -32,10 +32,6 @@ class PointCloudSubscriber(Node):
     def point_cloud_callback(self, msg):
         self.get_logger().info('Received PointCloud2 message')
 
-        for i in range(max(4, len(msg.fields))):
-            self.get_logger().info(f'Field {i} name: {msg.fields[i].name}')
-            self.get_logger().info(f'Field {i} datatype: {msg.fields[i].datatype}')
-
         base_grid = self.collect_points_into_grid(msg)
         
         avg_image = self.average_collected_points_in_grid(base_grid)

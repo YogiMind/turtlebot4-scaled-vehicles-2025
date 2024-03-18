@@ -4,12 +4,16 @@
 1. [Setup](#setup)
     1. [Installation](#installation)
     2. [Connecting RViz and Turtlebot](#connecting-rviz-and-turtlebot)
-2. [Connecting RViz and Turtlebot](#connecting-rviz-and-turtlebot)
-3. [Settings](#settings)
+    3. [Displaying Topic Data](#displaying-topic-data)
+        1. [Pointcloud2](#pointcloud2)
+        2. [Map](#map)
+2. [Settings](#settings)
+    1. [Camera](#camera)
 
 RViz is the software used for Turtlebot Simulations, previewing sensor data and getting visualisations from nodes and sensors on the robot. 
 
 ## Setup 
+
 ### Installation
 RViz2 is created for ROS2 and is part of the Turtlebot4 Desktop package. The package is installed through the command:  
 ```sudo apt install ros-humble-turtlebot4-desktop```
@@ -36,9 +40,25 @@ In this image, the following settings are used:
 | Durability     | Volatile      |
 
 
-To be able to view the camera, change ```publish_tf``` in [rtabmap.launch.py](../../../../Software/TurtleBot4/road_navigate/launch/thertabmap.launch.py) to ```True```.
+#### Map
+
+<img src="../../../Assets/Images/Turtlebot4/Software/Map_RViz.png" width="300">  
+<img src="../../../Assets/Images/Turtlebot4/Software/Map_RViz2.png" width="300">  
+
+*Map displayed with RViz sampling image data from the camera to create a map.* 
+
+In the image above, the MapCloud Display has been used instead of PointCloud2. However, Pointcloud2 is also an option and will produce similar results. 
+
+|    Setting     |  Value        |
+|----------------|---------------|
+| Topic          | /mapData      |
+| History Policy | Keep Last     |
+| Reliability    | Reliable      |
+| Durability     | Volatile      |
 
 
 ## Settings
 
+### Camera
+To be able to view the camera, change ```publish_tf``` in [rtabmap.launch.py](../../../../Software/TurtleBot4/road_navigate/launch/thertabmap.launch.py) to ```True```. 
 

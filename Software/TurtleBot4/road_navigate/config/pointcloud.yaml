@@ -6,7 +6,7 @@
       i_floodlight_brightness: 0
       i_laser_dot_brightness: 100
       i_nn_type: none
-      i_pipeline_type: RGBD
+      i_pipeline_type: DEPTH
       i_usb_speed: SUPER_PLUS
     rgb:
       i_board_socket_id: 0

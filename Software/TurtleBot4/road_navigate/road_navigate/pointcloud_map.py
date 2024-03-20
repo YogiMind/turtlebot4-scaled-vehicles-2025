@@ -51,7 +51,6 @@ class PointCloudSubscriber(Node):
             )
         )
 
-
         self.map_publisher = self.create_publisher(OccupancyGrid, '/myRoad', 1)
 
         self.mapSizeForward = 2.0 #map size in meters

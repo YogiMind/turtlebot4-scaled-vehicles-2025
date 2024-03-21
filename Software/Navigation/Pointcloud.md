@@ -1,6 +1,13 @@
 # Pointcloud
 
 ## Overview
+1. [Hardware](#hardware)  
+2. [Software](#software)  
+3. [Mapping](#mapping) 
+    1. [Depth Sensor](#depth-sensor)
+    2. [Code Overview](#code-overview)
+    3. [Using RGB](#using-rgb)
+4. [Configuration](#configuration)  
 
 ## Hardware
 Basically, most [Sensors](../../Documentation/TurtleBot4/Sensors/) on the Turtlebot4 is used for mapping. The [OAK-D Camera](../../Documentation/TurtleBot4/Sensors/Camera-OAK-D.md) uses its depth camera, [IMU's](../../Documentation/TurtleBot4/Sensors/Inertial%20Measurement-IMU.md) are used to help determine the angle and position the Turtlebot is moving while the [LiDAR](../../Documentation/TurtleBot4/Sensors/LiDAR.md) detect walls and potential physical obstacles. 
@@ -35,6 +42,8 @@ The code gather and builds a grid from the collected points in ```collect_points
 
 [pointcloud_map.py](../../Software/TurtleBot4/road_navigate/road_navigate/pointcloud_map.py) implements [Numba's no python mode(external link)](https://numba.readthedocs.io/en/stable/glossary.html#term-nopython-mode) to increase the efficiency of the code by compiling certain functions without accessing Python's own C API. 
 
+The resulting code is fast enough to be limited by the FPS of which data is sent from the pointcloud. 
+<img src="../../Documentation/Assets/Images/Turtlebot4/Software/pointcloud_code_results.png" width="500">
 
 ---
 

@@ -2,9 +2,21 @@
 
 This project is focused on the development and documentation of the TurtleBot4 robot and the GulliView system. The repository is structured into two main directories: Documentation and Software. 
 
+## Where to begin
+To set up and as quickly as possible start to use the Turtlebot, we recommend the following approach: 
+1. [Base Setup](/Documentation/TurtleBot4/Setup/Base-Setup.md)
+2. [Network Discovery Server](/Documentation/TurtleBot4/Setup/Network-Discovery-Server.md)  
+Once this has been set up, you can create a remote server
+3. [Remote Server](/Documentation/TurtleBot4/Setup/Remote-Server.md)  
+Then you can proceed to start getting code to run for road navigation. 
+4. [Road Navigation](/Software/TurtleBot4/road_navigate/)
+
+
 ## Documentation
 
-[The Documentation directory](Documentation) contains detailed information about the hardware and software components of the TurtleBot4 and GulliView systems as well as instructions on how to set them up and code that may be used when running each system. 
+[The Documentation directory](Documentation) contains detailed information about the hardware and software components of the TurtleBot4 and GulliView systems as well as instructions on how to set them up.  
+
+[The Software directory](/Software/) contains code that has been used in our project. This include [Road Navigation](/Software/TurtleBot4/road_navigate/) etc.  
 
 ### TurtleBot4 
 

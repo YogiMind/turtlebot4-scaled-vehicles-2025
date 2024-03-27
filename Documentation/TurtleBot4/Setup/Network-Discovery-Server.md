@@ -38,6 +38,26 @@ Navigate back to the main setup menu (don't forget to save the settings) and go 
 
 You should now go back to the main menu again, hit `Apply Settings` and the TurtleBot will reboot and try to connect to the WiFi you've set it up for. 
 
+## On PC
+Your PC should run `Ubuntu 22.04`. If you haven't completed the setup of ROS2, go to [Base-Setup](Base-Setup.md) and complete the steps first.  
+
+Make sure that you have `Git` installed, otherwise, the script supplied will not work properly. Check if git installed by running `git --version` in terminal. If you need to install git, run `sudo apt update` followed by `sudo apt install git`.
+
+Run `wget -qO - https://raw.githubusercontent.com/turtlebot/turtlebot4_setup/humble/turtlebot4_discovery/configure_discovery.sh | bash <(cat) </dev/tty` and follow the on-screen instructions. 
+
+1. Initial prompt  
+    <img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/Discovery_Setup_1.png" width="400">
+2. Enter IP-adress found on the Turtlebot's screen, hit enter until the `domain id` which should be a unique identifier (important for running more than one robot)  
+    <img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/Discovery_Setup_2.png" width="400">
+3. Source your bash by running `~/.bashrc`  
+    <img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/Discovery_Setup_3.png" width="400">
+
+4. Test that everything has been successfully set up by running `ip route`  
+    <img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/Discovery_Setup_4.png" width="400">
+
+5. Run `ros2 daemon stop; ros2 daemon start` then run `ros2 topic list` and you should get a long list of topics. Sometimes, you'll need to run it twice before all topics show up.  
+    <img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/Discovery_Setup_6.png" width="400">  
 
 
-
+## Read More
+[Turtlebot 4 Network Discovery Setup](https://turtlebot.github.io/turtlebot4-user-manual/setup/discovery_server.html)

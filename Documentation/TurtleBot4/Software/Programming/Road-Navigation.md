@@ -50,7 +50,7 @@ Responsible for:
 
 ### MapServer
 
-A subscriber that converts the map data into an OccupancyGrid message and publishes it on a ROS topic.
+A subscriber to the mapHandler that converts the map data into an OccupancyGrid message and publishes it on a ROS topic with a constant freq.
 
 ### RoadMap (Node)
 

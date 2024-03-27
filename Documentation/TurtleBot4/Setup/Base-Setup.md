@@ -38,7 +38,7 @@ Now, make sure to source your setup with `source /opt/ros/humble/setup.bash` and
 Run `sudo apt update` followed by `sudo apt install ros-humble-turtlebot4-desktop`. This will install the `turtlebot4_desktop` package. 
 
 ### Robot
-Follow the steps in [Network Discovery Server](/Documentation/TurtleBot4/Setup/Network-Discovery-Server.md) to set up the Turtlebot. 
+Follow the steps in [Network Discovery Server](/Documentation/TurtleBot4/Setup/Network-Discovery-Server.md). 
 
 ## Read More
 [Turtlebot Basic Setup](https://turtlebot.github.io/turtlebot4-user-manual/setup/basic.html)  

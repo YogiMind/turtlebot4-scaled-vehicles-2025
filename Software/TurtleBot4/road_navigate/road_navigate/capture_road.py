@@ -66,8 +66,6 @@ class CaptureRoad(Node):
         masked_image = cv2.bitwise_and(cv_image, mask)
         return masked_image
 
-
-    
     def detect_lines(self, cv_image):        
         masked_image = self.mask_upper_half(cv_image)
         

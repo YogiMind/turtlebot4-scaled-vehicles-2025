@@ -267,9 +267,44 @@ class MapServer(Subscriber):
             self.map = mapData
             
 class RoadMap(Node):
-    
+    """
+    Represents a road map for the TurtleBot4 navigation system.
+
+    This class provides functionality for transforming points, processing point cloud data,
+    and adding points to the map.
+
+    Attributes:
+        publishedTopic (str): The topic on which the road map is published.
+        pointCloudTopic (str): The topic on which the point cloud data is received.
+        robot_base_frame (str): The frame of the robot's base.
+        robot_map_frame (str): The frame of the map.
+        localMapSizeForward (float): The size of the local map in the forward direction.
+        localMapSizeLeftRigt (float): The size of the local map in the left-right direction.
+        grid_resolution (float): The resolution of the grid used for mapping.
+        fov (float): The field of view of the camera.
+        visionOffset (float): The offset of the camera from the robot's base.
+        mapServerTimePeriod (float): The time period for updating the map server.
+        tf_buffer (Buffer): The buffer for storing transforms.
+        tf_listener (TransformListener): The listener for transforms.
+        pointCloudPostProcessor (PointCloudImgPostProcessor): The post-processor for point cloud data.
+        mapHandler (MapHandler): The handler for the map.
+        mapServer (MapServer): The map server.
+        queue (Queue): The queue for storing point cloud messages.
+        subscriptionPointCloud (Subscription): The subscription for point cloud messages.
+    """
+
     @staticmethod
     def transform_points(points, transform):
+        """
+        Transforms the given points using the specified transform.
+
+        Args:
+            points (numpy.ndarray): The points to be transformed.
+            transform (geometry_msgs.msg.TransformStamped): The transform to apply.
+
+        Returns:
+            numpy.ndarray: The transformed points.
+        """
         translation = np.array([transform.transform.translation.x, transform.transform.translation.y, transform.transform.translation.z])
         rotation_quaternion = np.array([transform.transform.rotation.x, transform.transform.rotation.y, transform.transform.rotation.z, transform.transform.rotation.w])
         
@@ -286,6 +321,9 @@ class RoadMap(Node):
     
     
     def __init__(self):
+        """
+        Initializes a new instance of the RoadMap class.
+        """
         super().__init__('RoadMap')
         
         self.publishedTopic = '/myRoad'
@@ -327,6 +365,9 @@ class RoadMap(Node):
 
 
     def hold_for_transform(self):
+        """
+        Waits for the transform from the robot's base frame to the map frame to become available.
+        """
         while not self.tf_buffer.can_transform(target_frame=self.robot_map_frame, source_frame=self.robot_base_frame, time=rclpy.time.Time()):
             self.get_logger().info("Transform " + str(self.robot_base_frame) + " to " + str(self.robot_map_frame) + " not available, retrying...")
             rclpy.spin_once(self, timeout_sec=0.2)
@@ -335,22 +376,39 @@ class RoadMap(Node):
 
     
     def point_cloud_callback(self, msg):
+        """
+        Callback function for processing point cloud messages.
+
+        Args:
+            msg (sensor_msgs.msg.PointCloud2): The point cloud message.
+        """
         try:
             self.queue.put_nowait(msg)  # Enqueue the message
         except:
             pass
 
     def process_pointcloud_queue(self):
+        """
+        Processes the point cloud messages in the queue.
+        """
         while True:
             msg = self.queue.get()  # Dequeue the message
             self.add_to_map(msg)
 
     def start_processing_pointcloud_queue(self):
+        """
+        Starts the thread for processing the point cloud queue.
+        """
         processing_thread = threading.Thread(target=self.process_pointcloud_queue)
         processing_thread.start()
 
     def add_to_map(self, msg):
-        
+        """
+        Adds the points from the point cloud message to the map.
+
+        Args:
+            msg (sensor_msgs.msg.PointCloud2): The point cloud message.
+        """
         self.get_logger().info("in add to map")
 
         point_dtype = np.dtype([('x', 'f4'), ('y', 'f4'), ('z', 'f4'), ('intensity', 'f4')])

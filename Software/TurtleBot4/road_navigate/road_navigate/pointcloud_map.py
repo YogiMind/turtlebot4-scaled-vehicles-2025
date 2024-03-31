@@ -20,7 +20,6 @@ def collect_points_into_grid(data_array, mapSizeWidth,mapSizeForward, grid_resol
 
         xMapOffset = mapSizeWidth / 2
 
-
         for point in data_array:  
             x = point['x']
             y = point['y']

@@ -60,4 +60,8 @@ Run `wget -qO - https://raw.githubusercontent.com/turtlebot/turtlebot4_setup/hum
 
 
 ## Read More
-[Turtlebot 4 Network Discovery Setup](https://turtlebot.github.io/turtlebot4-user-manual/setup/discovery_server.html)
+[Turtlebot 4 Network Discovery Setup](https://turtlebot.github.io/turtlebot4-user-manual/setup/discovery_server.html)  
+
+[Discovery Server Documentation](https://fast-dds.docs.eprosima.com/en/latest/fastdds/ros2/discovery_server/ros2_discovery_server.html)
+
+[Turtlebot 4 Networking](https://turtlebot.github.io/turtlebot4-user-manual/setup/networking.html)

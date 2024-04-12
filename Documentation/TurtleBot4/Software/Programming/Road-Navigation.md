@@ -30,15 +30,17 @@ The code defines the following classes:
 
 ### PointCloudImgPostProcessor
 
-Transforms point cloud data to grid representation, optimized with Numba.
-
+Transforms point cloud data to grid representation, optimized with Numba.  
+____
 ### Map
 
-Stores map data, origin, and resolution.
+Stores map data, origin, and resolution.  
+____
 
 ### Subscriber (ABC)
 
-Base class for subscribers implementing the update method.
+Base class for subscribers implementing the update method.  
+___
 
 ### MapHandler
 
@@ -46,11 +48,13 @@ Responsible for:
 * Maintaining the internal map representation.
 * Integrating new point cloud data.
 * Generating an updated map.
-* Notifying subscribers of map updates.
+* Notifying subscribers of map updates.  
+___
 
 ### MapServer
 
-A subscriber to the mapHandler that converts the map data into an OccupancyGrid message and publishes it on a ROS topic with a constant freq.
+A subscriber to the mapHandler that converts the map data into an OccupancyGrid message and publishes it on a ROS topic with a constant freq.  
+___
 
 ### RoadMap (Node)
 
@@ -59,8 +63,8 @@ The main ROS node:
 * Sets up the TransformListener.
 * Manages the PointCloudImgPostProcessor and MapHandler.
 * Creates the Subscriber for publishing the map.
-* Handles ROS subscriptions and point cloud processing.
-
+* Handles ROS subscriptions and point cloud processing.  
+___
 
 ## Occupancy Grid
 An Occupancy Grid is a popular data structure used in robotics for mapping an environment. It represents the environment as a grid of cells, where each cell holds a value representing the probability that the cell is occupied by an obstacle, in our case, the outlines of a road.  
@@ -72,6 +76,7 @@ The OccupancyGrid is then published by the `MapServer` class, which allows other
 <img src="../../../../Documentation/Assets/Videos/Turtlebot4/Software/Environment_Layers.gif" width=300>  
 
 _The Occupancy Grid creates the second layer of this animation, "Road"_ 
+
 
 
 

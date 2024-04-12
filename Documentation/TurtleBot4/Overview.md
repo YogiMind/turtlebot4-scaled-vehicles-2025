@@ -1,3 +1,12 @@
+# TurtleBot 4 Overview
+
+# Introduction
+
+The TurtleBot 4 consists of an iRobot [Create 3](../TurtleBot4/On-Board-Computers/Create3/) base which has been extended with a [Raspberry Pi 4B (4 GB)](../TurtleBot4/On-Board-Computers/Raspberry-Pi/), a User Interface PCBA which allow extra sensors to be added through the 4 USB-C ports (requires a change of cable), an [OAK-D Pro](../TurtleBot4/Sensors/Camera-OAK-D.md) camera and a [RP-LiDAR](../TurtleBot4/Sensors/LiDAR.md). 
+
+The TurtleBot 4 runs on ROS2 (in our case ROS2 Humble) and 
+
+
 | Specification           | Value                                                                                       |
 |-------------------------|---------------------------------------------------------------------------------------------|
 | External Dimensions     | 341 x 339 x 351 mm (13.4 x 13.3 x 13.8 in)                                                  |

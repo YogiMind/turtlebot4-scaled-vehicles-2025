@@ -1,0 +1,18 @@
+{
+    "publishedTopic": "/myRoad",
+    "pointCloudTopic": "/oakd/points",
+    "robot_base_frame": "base_link",
+    "robot_map_frame": "map",
+    "mapServerTimePeriod": 0.1,
+    "mapHandler": {
+        "resolution": 0.035,
+        "minPoints": 7,
+        "maxPoints": 12
+    },
+    "pointCloudPostProcessor": {
+        "targetFrame": "map",
+        "sourceFrame": "base_link",
+        "heightThreshold": 1.1,
+        "minDistance": 0.4
+    }
+}

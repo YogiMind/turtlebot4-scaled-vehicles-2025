@@ -14,7 +14,7 @@ from rclpy.duration import Duration
 from tf2_ros import Buffer, TransformListener
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSDurabilityPolicy
 import threading, queue
-
+import os
 
 
 globalLogger = None
@@ -164,7 +164,8 @@ class PointCountTrackMapHandler(MapHandler):
     underlyingMapGrid = np.zeros((1, 1), dtype=np.int8)
     origin = np.array([0, 0], dtype=int)  # Origin point
     map = np.zeros((1, 1), dtype=np.int8)
-    lock = threading.RLock()
+    LockOne = threading.RLock()
+    LockTwo = threading.RLock()
     subscribers = [MapHandlerSubscriber]
     
 
@@ -182,19 +183,21 @@ class PointCountTrackMapHandler(MapHandler):
 
 
     def __notifySubscribers(self):
-        for sub in self.subscribers:
+        with self.LockOne:
+            subscribers = self.subscribers
+        for sub in subscribers:
             sub.updateGlobalMap(self)
 
 
-    def __postProcessMap(self):
-        self.map = self.mapPostProcessor.processMap(self.map)
+    def __postProcessMap(self, map):
+        return self.mapPostProcessor.processMap(map)
 
 
     def __formMap(self):
         map = self.underlyingMapGrid.copy()
-        filter = map > 30
+        filter = map > 40
         map[filter] = 100
-        self.map = map
+        return map
 
 
     def __updateMapSize(self, xy):
@@ -250,14 +253,14 @@ class PointCountTrackMapHandler(MapHandler):
             ground = self.roadLineSeparator.getNonRoadLinePoints()
 
             cellCounter = np.zeros_like(self.underlyingMapGrid)
-            np.add.at(cellCounter, (road[:, 1].astype(int), road[:, 0].astype(int)), 2)
+            np.add.at(cellCounter, (road[:, 1].astype(int), road[:, 0].astype(int)), 4)
             np.add.at(cellCounter, (ground[:, 1].astype(int), ground[:, 0].astype(int)), -1)
 
             roadFilter = cellCounter > 0
             groundFilter = cellCounter < 0
 
-            self.underlyingMapGrid[roadFilter] += 10
-            self.underlyingMapGrid[groundFilter] -= 10
+            self.underlyingMapGrid[roadFilter] += 7
+            self.underlyingMapGrid[groundFilter] -= 7
 
             mask = self.underlyingMapGrid < 0
             self.underlyingMapGrid[mask & groundFilter] = 0 #keep unknown cells at -1
@@ -267,22 +270,23 @@ class PointCountTrackMapHandler(MapHandler):
 
 
     def addSubscriber(self, subscriber: MapHandlerSubscriber):
-        with self.lock:
+        with self.LockOne:
             self.subscribers.append(subscriber)
 
 
     def getMap(self) -> Map:
-        with self.lock:
+        with self.LockOne:
             return Map(self.map, self.origin.copy(), self.mapScale, np.array([0,0]))
     
 
     def addPoints(self, points: np.array):
-        with self.lock:
+        with self.LockTwo:
             mappingPoints = np.array(points)
-            
             self.__updateUnderlyingMap(mappingPoints)
-            self.__formMap()
-            self.__postProcessMap()
+            map = self.__formMap()
+            map = self.__postProcessMap(map)
+            with self.LockOne:
+                self.map = map
             self.__notifySubscribers()
 
 
@@ -344,20 +348,23 @@ class RemoveSmallContoursPostProcessor(MapPostProcessor):
 
 
 
-class DerivedMapMaker(MapHandlerSubscriber):
+class DerivedMapMaker():
 
     subscribers = [DerivedMapMakerSubscriber]
 
-    def __init__(self, tfBuffer, robot_map_frame, robot_base_frame, mapSizeLocalMeters, mapSizePositionCenteredGlobal):
+    def __init__(self, tfBuffer, robot_map_frame, robot_base_frame, mapSizeLocal, mapSizePositionCenteredGlobal, mapHandler : MapHandler, retransformTime):
         self.lock = threading.RLock()
-        self.map = None
-        self.mapTemp = None
         self.robot_map_frame = robot_map_frame
         self.robot_base_frame = robot_base_frame
         self.tfBuffer = tfBuffer
+        self.mapHandler = mapHandler
+        self.retransformTime = retransformTime
 
-        self.mapSizeLocalMeters = mapSizeLocalMeters
+        self.mapSizeLocalMeters = mapSizeLocal
         self.mapSizePositionCenteredGlobal = mapSizePositionCenteredGlobal
+
+        self.localMap = None
+        self.positionCenteredGlobalMap = None
 
         processing_thread = threading.Thread(target=self.__retransformMaps)
         processing_thread.start()
@@ -365,16 +372,12 @@ class DerivedMapMaker(MapHandlerSubscriber):
 
     def __retransformMaps(self):
         global globalLogger
-
-        #Wait for map-temporary to be filled with data
-        while self.mapTemp is None:
-            continue
-
         while True:
-            with self.lock:
-                self.map = self.mapTemp
-                self.localMapSize = self.localMapSizeTemp
-            
+            time.sleep(self.retransformTime)            
+            mapData = self.mapHandler.getMap()
+            self.map  = mapData
+            self.localMapSize = np.ceil(self.mapSizeLocalMeters / mapData.resolution).astype(int)
+
             try:
                 baseToMapTransform = self.tfBuffer.lookup_transform(target_frame=self.robot_map_frame, source_frame=self.robot_base_frame, time=rclpy.time.Time(), timeout=rclpy.duration.Duration(seconds=10))
                 self.__formLocalMap(baseToMapTransform)
@@ -385,7 +388,10 @@ class DerivedMapMaker(MapHandlerSubscriber):
 
 
     def __notifySubscribers(self):
-        for sub in self.subscribers:
+        with self.lock:
+            subscribers = self.subscribers
+        
+        for sub in subscribers:
             sub.updateDerivedMaps(self)
 
 
@@ -425,7 +431,8 @@ class DerivedMapMaker(MapHandlerSubscriber):
         
         map = self.__select_square_around_center(self.map.mapData, mapXYCenter, radius)
 
-        self.positionCenteredGlobalMap = Map(map, np.array([radius, radius]), self.map.resolution, translation)
+        with self.lock:
+            self.positionCenteredGlobalMap = Map(map, np.array([radius, radius]), self.map.resolution, translation)
 
 
     def __formLocalMap(self, baseToMapTransform):
@@ -454,16 +461,9 @@ class DerivedMapMaker(MapHandlerSubscriber):
 
         # Set valid map values to the local map
         local_map_data[local_map_indices[:,1][valid_indices_mask], local_map_indices[:,0][valid_indices_mask]] = self.map.mapData[map_indices_i[valid_indices_mask], map_indices_j[valid_indices_mask]]
-
-        self.localMap = Map(local_map_data, np.array([local_map_data.shape[1] //2, local_map_data.shape[0] //2]), self.map.resolution, np.array([0,0]))
-
-
-    def updateGlobalMap(self, context : PointCountTrackMapHandler):
-        mapData = context.getMap()
-        #localMapData = self.map_to_occupancy_grid(context.getLocalMap(), "base_link")
+        
         with self.lock:
-            self.mapTemp = mapData
-            self.localMapSizeTemp = np.ceil(self.mapSizeLocalMeters / mapData.resolution).astype(int)
+            self.localMap = Map(local_map_data, np.array([local_map_data.shape[1] //2, local_map_data.shape[0] //2]), self.map.resolution, np.array([0,0]))
 
 
     def addSubscriber(self, subscriber: MapHandlerSubscriber):
@@ -482,7 +482,7 @@ class DerivedMapMaker(MapHandlerSubscriber):
 
 
 
-class MapServer(MapHandlerSubscriber, DerivedMapMakerSubscriber):
+class MapServer():
 
     @staticmethod
     def map_to_occupancy_grid(map: Map, frame):
@@ -505,21 +505,16 @@ class MapServer(MapHandlerSubscriber, DerivedMapMakerSubscriber):
 
         return occupancy_grid
 
-    def __init__(self, rosNode, timePeriod, publishedTopicName, robot_map_frame, robot_base_frame):
+    def __init__(self, rosNode, timePeriod, publishedTopicName, robot_map_frame, robot_base_frame, mapHandler : MapHandler, derivedMapMaker : DerivedMapMaker):
         self.publisher = rosNode.create_publisher(OccupancyGrid, publishedTopicName, qos_profile=self.__get_qos_profile())
         self.publisherLocal = rosNode.create_publisher(OccupancyGrid, publishedTopicName+"Local", qos_profile=self.__get_qos_profile())
         self.publisherPositionCentered = rosNode.create_publisher(OccupancyGrid, publishedTopicName+"PositionCentered", qos_profile=self.__get_qos_profile())
         self.timer = rosNode.create_timer(timePeriod, self.__publish)
         self.robot_map_frame = robot_map_frame
         self.robot_base_frame = robot_base_frame
-        self.lock = threading.Lock()
-        self.map = None
-        self.localMap = None
-        self.positionCenteredGlobalMap = None
 
-        self.mapTemp = None
-        self.localMapTemp = None
-        self.positionCenteredGlobalMapTemp = None
+        self.mapHandler = mapHandler
+        self.derivedMapMaker = derivedMapMaker
 
     def __get_qos_profile(self):
         qos_profile = QoSProfile(depth=10)  # Customize depth as needed
@@ -528,45 +523,38 @@ class MapServer(MapHandlerSubscriber, DerivedMapMakerSubscriber):
 
 
     def __publish(self):
-        with self.lock:
-                self.mapTemp = self.map
-                self.localMapTemp = self.localMap
-                self.positionCenteredGlobalMapTemp = self.positionCenteredGlobalMap
+            try:
+                map = self.map_to_occupancy_grid(self.mapHandler.getMap(), self.robot_map_frame)
+                localMap = self.map_to_occupancy_grid(self.derivedMapMaker.getLocalMap(), self.robot_base_frame)
+                positionCenteredGlobalMap = self.map_to_occupancy_grid(self.derivedMapMaker.getPositionCenteredGlobalMap(), self.robot_map_frame)
+                self.publisher.publish(map)
+                self.publisherLocal.publish(localMap)
+                self.publisherPositionCentered.publish(positionCenteredGlobalMap)
+            except:
+                pass
 
 
-        if (self.mapTemp) and (self.positionCenteredGlobalMapTemp) and (self.localMapTemp):
-            map = self.map_to_occupancy_grid(self.mapTemp, self.robot_map_frame)
-            localMap = self.map_to_occupancy_grid(self.localMapTemp, self.robot_base_frame)
-            positionCenteredGlobalMap = self.map_to_occupancy_grid(self.positionCenteredGlobalMapTemp, self.robot_map_frame)
-            self.publisher.publish(map)
-            self.publisherLocal.publish(localMap)
-            self.publisherPositionCentered.publish(positionCenteredGlobalMap)    
 
-
-    
-    def updateGlobalMap(self, context : PointCountTrackMapHandler):
-        mapData = context.getMap()
-        with self.lock:
-            self.map = mapData
-    
-
-    def updateDerivedMaps(self, context : DerivedMapMaker):
-        localMap = context.getLocalMap()
-        positionCenteredGlobalMap = context.getPositionCenteredGlobalMap()
-        with self.lock:
-            self.localMap = localMap
-            self.positionCenteredGlobalMap = positionCenteredGlobalMap
-
-class HermesMapper(Node):
+class Hermes_mapper(Node):
     
     def __init__(self):
-        super().__init__('HermesMapper')
+        super().__init__('Hermes_mapper')
 
         self.publishedTopic = '/myRoad'
         self.pointCloudTopic = '/oakd/points'
         self.robot_base_frame = "base_link"
         self.robot_map_frame = "map"
-        self.mapServerTimePeriod = 0.2
+        self.mapServerTimePeriod = 0.35
+
+        mapRes = 0.02
+        initMapSize = 20
+
+        pointCloudIntensityTrh = 190
+        visionRangeForward = 1.0
+        visionRangeSide = 0.55
+
+        localMapSize = 1.6
+        positionCenteredMapSize = 1.6
 
         global globalLogger
         globalLogger = self.get_logger()
@@ -574,14 +562,11 @@ class HermesMapper(Node):
         self.tf_buffer = Buffer(cache_time=rclpy.duration.Duration(seconds=60))
         self.tf_listener = TransformListener(self.tf_buffer, self)
         
-        self.mapHandler = PointCountTrackMapHandler(0.02, 10, 10, ThresholdRoadLineSeparator(190), NoneMapPostProcessor())
-        self.pointCloudPostProcessor = TransfromPointCloudPostProcessor(self.robot_map_frame, self.robot_base_frame, 1.0, 0.55)
-        self.derivedMapMaker = DerivedMapMaker(self.tf_buffer, self.robot_map_frame, self.robot_base_frame, 2.0, 1.6)
-        self.mapServer = MapServer(self, self.mapServerTimePeriod, self.publishedTopic, self.robot_map_frame, self.robot_base_frame)
+        self.pointCloudPostProcessor = TransfromPointCloudPostProcessor(self.robot_map_frame, self.robot_base_frame, visionRangeForward, visionRangeSide)
+        self.mapHandler = PointCountTrackMapHandler(mapRes, initMapSize, initMapSize, ThresholdRoadLineSeparator(pointCloudIntensityTrh), NoneMapPostProcessor())
+        self.derivedMapMaker = DerivedMapMaker(self.tf_buffer, self.robot_map_frame, self.robot_base_frame, positionCenteredMapSize, localMapSize, self.mapHandler, self.mapServerTimePeriod)
+        self.mapServer = MapServer(self, self.mapServerTimePeriod, self.publishedTopic, self.robot_map_frame, self.robot_base_frame, self.mapHandler, self.derivedMapMaker)
 
-        self.derivedMapMaker.addSubscriber(self.mapServer)
-        self.mapHandler.addSubscriber(self.mapServer)
-        self.mapHandler.addSubscriber(self.derivedMapMaker)
         
         self.queue = queue.Queue(maxsize=5) 
         self.start_processing_pointcloud_queue()
@@ -640,20 +625,33 @@ class HermesMapper(Node):
         except Exception as e:
            self.get_logger().info("error: " + str(e))
            return
+    
+    def saveMapImage(self):
+        themap = self.mapHandler.getMap().mapData
+        minusone = themap == -1
+        themap[minusone] = 128
 
+
+        inverted_image = 255 - (themap.astype(np.uint8) * 2.55).astype(np.uint8)
+        # Create a 3-channel image from the greyscale image
+        color_image = cv2.cvtColor(inverted_image, cv2.COLOR_GRAY2BGR)
+
+        # Set pixels with value 128 (previously -1) to light blue
+        light_blue = (230, 216, 173)  # bgr values for light blue
+        color_image[minusone] = light_blue
+
+        home_dir = os.path.expanduser("~")
+        # Save the color image
+        cv2.imwrite(os.path.join(home_dir, 'output_map_image.png'), color_image)
 
 
 def main(args=None):
     rclpy.init(args=args)
-    hermes = HermesMapper()
+    hermes = Hermes_mapper()
     try:
         rclpy.spin(hermes)
     except KeyboardInterrupt:
-        pass  # Allow clean shutdown on Ctrl+C
+        hermes.saveMapImage()
     finally:
         hermes.destroy_node()
         rclpy.shutdown()
-
-
-
-

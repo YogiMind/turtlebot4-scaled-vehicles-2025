@@ -15,7 +15,7 @@ from tf2_ros import Buffer, TransformListener
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSDurabilityPolicy
 import threading, queue
 import os
-
+from std_msgs.msg import String
 
 globalLogger = None
 
@@ -583,6 +583,9 @@ class Hermes_mapper(Node):
             )
         )
 
+        self.subscriptionSaveMap = self.create_subscription(String, '/hermes_cmd', self.command, 10)
+        
+
 
     def hold_for_transform(self):
         while not self.tf_buffer.can_transform(target_frame=self.robot_map_frame, source_frame=self.robot_base_frame, time=rclpy.time.Time()):
@@ -626,24 +629,34 @@ class Hermes_mapper(Node):
            self.get_logger().info("error: " + str(e))
            return
     
-    def saveMapImage(self):
-        themap = self.mapHandler.getMap().mapData
-        minusone = themap == -1
-        themap[minusone] = 128
 
+    #ros2 topic pub /hermes_cmd std_msgs/String "data: 'save'"
+    #ros2 topic pub /hermes_cmd std_msgs/String "data: 'reset'"
+    def command(self, msg):
+        command = msg.data
+        if(command == "save"):
+            
+            self.get_logger().info("svaving map")
+            themap = self.mapHandler.getMap().mapData
+            minusone = themap == -1
+            themap[minusone] = 128
+            
 
-        inverted_image = 255 - (themap.astype(np.uint8) * 2.55).astype(np.uint8)
-        # Create a 3-channel image from the greyscale image
-        color_image = cv2.cvtColor(inverted_image, cv2.COLOR_GRAY2BGR)
+            inverted_image = 255 - (themap.astype(np.uint8) * 2.55).astype(np.uint8)
+            # Create a 3-channel image from the greyscale image
+            color_image = cv2.cvtColor(inverted_image, cv2.COLOR_GRAY2BGR)
 
-        # Set pixels with value 128 (previously -1) to light blue
-        light_blue = (230, 216, 173)  # bgr values for light blue
-        color_image[minusone] = light_blue
+            # Set pixels with value 128 (previously -1) to light blue
+            light_blue = (230, 216, 173)  # bgr values for light blue
+            color_image[minusone] = light_blue
 
-        home_dir = os.path.expanduser("~")
-        # Save the color image
-        cv2.imwrite(os.path.join(home_dir, 'output_map_image.png'), color_image)
-
+            home_dir = os.path.expanduser("~")
+            # Save the color image
+            cv2.imwrite(os.path.join(home_dir, 'the_output_map.png'), color_image)
+            self.get_logger().info("map saved")
+        elif(command == "reset"):
+            self.mapHandler.underlyingMapGrid = np.zeros((1, 1), dtype=np.int8)
+            
 
 def main(args=None):
     rclpy.init(args=args)
@@ -651,7 +664,11 @@ def main(args=None):
     try:
         rclpy.spin(hermes)
     except KeyboardInterrupt:
-        hermes.saveMapImage()
+        pass
     finally:
         hermes.destroy_node()
         rclpy.shutdown()
+
+
+
+

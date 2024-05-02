@@ -637,7 +637,7 @@ class Hermes_mapper(Node):
         if(command == "save"):
             
             self.get_logger().info("svaving map")
-            themap = self.mapHandler.getMap().mapData
+            themap = self.mapHandler.getMap().mapData.copy()
             minusone = themap == -1
             themap[minusone] = 128
             

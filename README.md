@@ -1,6 +1,6 @@
 # Project Overview
 
-This project is focused on the development and documentation of the TurtleBot4 robot and the GulliView system. The repository is structured into two main directories: Documentation and Software. 
+This project is focused on the development and documentation of the TurtleBot4 robot and the GulliView system. The repository is structured into two main directories: Documentation and Software. Where the Documentation section cover theory, tutorials and the Software section includes the software with which the system named Hermes is built. Note that this is very much a work in progress and it's just meant to be a way to get started for students which will continue where we left off. 
 
 ## Where to begin
 To set up and as quickly as possible start to use the Turtlebot, we recommend the following approach: 

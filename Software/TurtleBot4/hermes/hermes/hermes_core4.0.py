@@ -629,7 +629,6 @@ class Hermes_mapper(Node):
            self.get_logger().info("error: " + str(e))
            return
     
-
     #ros2 topic pub /hermes_cmd std_msgs/String "data: 'save'"
     #ros2 topic pub /hermes_cmd std_msgs/String "data: 'reset'"
     def command(self, msg):
@@ -654,6 +653,7 @@ class Hermes_mapper(Node):
             # Save the color image
             cv2.imwrite(os.path.join(home_dir, 'the_output_map.png'), color_image)
             self.get_logger().info("map saved")
+        
         elif(command == "reset"):
             self.mapHandler.underlyingMapGrid = np.zeros((1, 1), dtype=np.int8)
             

@@ -1,18 +1,41 @@
 {
-    "publishedTopic": "/myRoad",
-    "pointCloudTopic": "/oakd/points",
-    "robot_base_frame": "base_link",
-    "robot_map_frame": "map",
-    "mapServerTimePeriod": 0.1,
+    "globalLogger": "defaultLogger",
+    "tf_buffer": {
+        "cache_time_seconds": 60
+    },
+    "topics": {
+        "published": "/myRoad",
+        "pointCloud": "/oakd/points"
+    },
+    "frames": {
+        "robot_base": "base_link",
+        "robot_map": "map"
+    },
+    "mapServer": {
+        "timePeriod": 0.1
+    },
     "mapHandler": {
-        "resolution": 0.035,
-        "minPoints": 7,
-        "maxPoints": 12
+        "map_resolution": 0.035,
+        "initial_map_width": 12,
+        "initial_map_height": 7,
+        "road_intensity_threshold": 180
     },
     "pointCloudPostProcessor": {
-        "targetFrame": "map",
-        "sourceFrame": "base_link",
-        "heightThreshold": 1.1,
-        "minDistance": 0.4
+        "parameters": [1.3, 0.6]
+    },
+    "localMapHandler": {
+        "parameters": [2.0]
+    },
+    "post_processing": {
+        "post_processor_type": "GaussianBlur",
+        "kernel_size": 3
+    },
+    "publisher": {
+        "map_publish_rate": 1.0,
+        "map_topic_names": {
+            "global": "/hermes/map",
+            "local": "/hermes/local_map",
+            "position_centered": "/hermes/position_centered_map" 
+        }
     }
 }

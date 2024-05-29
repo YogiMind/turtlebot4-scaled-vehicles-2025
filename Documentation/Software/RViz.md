@@ -43,25 +43,6 @@ In the above image, the following settings are used:
 
 
 #### Map
-
-<img src="../../../Assets/Images/Turtlebot4/Software/Map_RViz.png" width="300">  
-<img src="../../../Assets/Images/Turtlebot4/Software/Map_RViz2.png" width="300">  
-
-*Map displayed with RViz sampling image data from the camera to create a map.* 
-
-In the image above, the MapCloud Display has been used instead of PointCloud2. However, Pointcloud2 is also an option and will produce similar results. 
-
-|    Setting     |  Value        |
-|----------------|---------------|
-| Topic          | /mapData      |
-| History Policy | Keep Last     |
-| Reliability    | Reliable      |
-| Durability     | Volatile      |
-
-
-## Settings
-
-
-### Camera
-To be able to view the camera, change ```publish_tf``` in [rtabmap.launch.py](../../../../Software/TurtleBot4/road_navigate/launch/thertabmap.launch.py) to ```True```. 
-
+Example images: 
+<img src="/Assets/Images/Turtlebot4/Software/Map_RViz.png" width="300">  
+<img src="/Assets/Images/Turtlebot4/Software/Map_RViz2.png" width="300">  

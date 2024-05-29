@@ -16,7 +16,7 @@ Make sure that you don't pull on the chords, there's a small plastic piece that 
 <img src="../Assets/Images/Turtlebot4/Hardware/adapter_board_charging.png" width=300>  
 
 ### Step 4: Enjoy Faster Charging
-Looks good to me, of course, don't forget to place the robot back on the dock.   
+Looks good to me, of course, don't forget to place the robot back on the dock.  
 
 <img src="../Assets/Images/Turtlebot4/Hardware/unplugged_adapter_board.png" width=300>  
 

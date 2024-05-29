@@ -2,8 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Load the data
-data = pd.read_csv('output/resultat_full_lab_NEW_10_Maj_45_35_20.csv')
 
 # Define a function to categorize images based on their names
 def categorize_image(name):
@@ -55,7 +53,7 @@ def plot_scatter_plots(data):
     plt.savefig(f'scatter_plots.png')
     plt.show()
 
-# Calculate and print the correlation matrix
+
 def print_correlation_matrix(data):
     correlation_matrix = data[['NCC', 'SSIM', 'MSE', 'Overall Score']].corr()
     print(correlation_matrix)
@@ -67,7 +65,6 @@ def print_correlation_matrix(data):
     plt.savefig(f'correlation_matrix.png')
     plt.show()
 
-# Compute and print statistical summaries
 def print_statistical_summary(data):
     statistical_summary = data[['NCC', 'SSIM', 'MSE', 'Overall Score']].describe()
     print(statistical_summary)
@@ -99,8 +96,7 @@ def plot_with_annotations(data):
     # Annotating each point with the corresponding image name
     for i in range(data.shape[0]):
         plt.text(data.iloc[i]['SSIM'], data.iloc[i]['NCC'], data.iloc[i]['Image'], 
-                 fontdict={'size': 9}, ha='right')  # Adjust text size and alignment as needed
-    plt.savefig(f'annotations.png')
+                 fontdict={'size': 9}, ha='right') 
     plt.show()
 
 def create_heatmap(data):
@@ -121,13 +117,16 @@ def histogram_by_group(data):
     plt.savefig(f'overall_score_distribution_hist.png')
 
 # Run all analysis functions
-plot_histograms(data)
-plot_scatter_plots(data)
-print_correlation_matrix(data)
-print_statistical_summary(data)
-print_grouped_means(data)
-plot_average_scores(data)
-plot_with_annotations(data)
-create_heatmap(data)
-scatter_plot_by_group(data)
-histogram_by_group(data)
+
+if __name__ == '__main__':
+    data = pd.read_csv('image_analysis_results.csv')
+    plot_histograms(data)
+    plot_scatter_plots(data)
+    print_correlation_matrix(data)
+    print_statistical_summary(data)
+    print_grouped_means(data)
+    plot_average_scores(data)
+    plot_with_annotations(data)
+    create_heatmap(data)
+    scatter_plot_by_group(data)
+    histogram_by_group(data)

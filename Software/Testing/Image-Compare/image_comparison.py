@@ -45,7 +45,7 @@ def run_image_comparison_algorithms(input_folder, input_images, gt_image, image_
     return results
 
 def save_csv_results(results_dict, output):
-    with open(f'{output}resultat_full_lab_NEW_10_Maj_45_35_20.csv', 'w', newline='') as f:
+    with open(f'{output}results.csv', 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Image", "NCC", "SSIM", "MSE", "Overall Score"])
         for img, values in results_dict.items():
@@ -57,21 +57,19 @@ def save_csv_results(results_dict, output):
 def main(input_folder, ground_truth, output_folder, weights, algorithms_dict):
     input_images = get_images(input_folder)
 
-    # Get the list of image comparison algorithms
     image_comparison_algorithms = get_image_comparison_algorithms(algorithms_dict)
 
-    # Run the image comparison algorithms
     results = run_image_comparison_algorithms(input_folder, input_images, ground_truth, image_comparison_algorithms)
 
-    # Calculate the overall scores
     results_ = calculate_scores(results, weights)
 
-    # Save the results to a CSV file
     save_csv_results(results_, output_folder)
 
 if __name__ == '__main__':
+    # Algorithms used for image comparisons
     algorithms_dict = {'ncc': 'normalized_cross_correlation', 'ssim': 'ssim', 'mse': 'mean_square_error'}
     input_folder = 'img/full_lab_significant/'
+    # Image that is used to compare the input images to. 
     ground_truth = 'img/ground_truth/ground_truth.png'
     output_folder = 'output/'
     weights = {'ncc': 0.45, 'ssim': 0.35, 'mse': 0.20}

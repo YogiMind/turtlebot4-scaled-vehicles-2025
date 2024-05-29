@@ -14,11 +14,3 @@
 
 _Upper line is using 1 line of tape, lower line is made thicker by adding an extra line of tape_
 
-
-
-
-#### Random Notes for later use 
-Max Speed -> Measure 
-Dynamic Objects not updating using Nav2
-
-

@@ -1,6 +1,6 @@
 # Project Overview
 
-This project is focused on the development and documentation of the TurtleBot4 robot and the Hermes system, a software system designed to enable autonomous driving capabilities for the TurtleBot4. The repository is structured into three main directories: Documentation, Software, and Results. The Documentation section covers theory, tutorials, and setup instructions. The Software section includes the codebase for the Hermes system, and the Results section contains experimental results and analysis.
+This project is focused on the development and documentation of the TurtleBot4 robot and the Hermes system, a software system designed to enable autonomous driving capabilities for the TurtleBot4. The repository is structured into three main directories: Documentation, Software, and Results. The Documentation section covers theory, tutorials, setup instructions and more. The Software section includes the codebase for the Hermes system, and the Results section has some results that were achieved during the development of the project. 
 
 ## Where to begin
 

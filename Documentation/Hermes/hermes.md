@@ -31,12 +31,10 @@ This ROS2 node generates a map based on point cloud data from a sensor (e.g., an
    - `sensor_msgs`, `nav_msgs`, `tf2_ros`, `std_msgs` packages
    - `numpy`, `opencv-python` (cv2), `numba` libraries
 2. **Building:**
-   - Create a ROS2 package for this node.
-   - Place this code in a Python file (e.g., `hermes_mapper.py`) within the package's `scripts` directory.
-   - Build the package using `colcon build`.
+   - Add the Hermes package to your TurtleBot 4
+   - Build the package using `colcon build --symlink -install`.
 
 ## Configuration
-
 Parameters are configured directly in the `Hermes_mapper` class constructor:
 
 - `publishedTopic`: ROS2 topic to publish the map on (default: `/myRoad`)
@@ -49,7 +47,7 @@ Parameters are configured directly in the `Hermes_mapper` class constructor:
 ## Usage
 
 1. **Launching:**
-   - After building, run the node using `ros2 run <your_package_name> Hermes_mapper`
+   - After building, run the node using `ros2 launch hermes hermes_core.launch.py`
 2. **Saving the map:**
    - Publish a message with the string `'save'` to the `/hermes_cmd` topic.
 3. **Resetting the map:**
@@ -96,3 +94,8 @@ Parameters are configured directly in the `Hermes_mapper` class constructor:
 ## Main Execution
 
 The `main` function initializes the ROS2 node, creates an instance of the `Hermes_mapper` class, and then enters the ROS2 spin loop to process incoming messages and perform the mapping logic.
+
+## Possible Improvements 
+
+- One of the main issues is that we need to transform our Numpy array to a regular Python array which can be slow.
+- Investigate the possibility of moving parameters from the script and into ROS2 parameters to allow users to change parameters during runtime. 

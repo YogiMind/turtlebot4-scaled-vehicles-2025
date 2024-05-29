@@ -46,3 +46,6 @@ Follow the steps in [Network Discovery Server](/Documentation/TurtleBot4/Setup/N
 [ROS2 Humble Installation Documentation](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)  
 [Ubuntu about Repositories](https://help.ubuntu.com/community/Repositories/Ubuntu)
 [GPG Keys](https://www.gnupg.org/gph/en/manual/c14.html)
+
+## Sanity Check
+After setting up the Turtlebot and a ROS2 workspace on your workstation we recommend you run the turtlebot4_move.py node to validate a connection between your PC and the robot.  

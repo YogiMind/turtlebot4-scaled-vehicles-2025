@@ -4,7 +4,7 @@ This guide provides instructions on how to modify the camera configuration for t
 
 ## Camera Position and Rotation Parameters
 
-The following parameters within the TurtleBot 4 URDF file (`/opt/ros/humble/share/turtlebot4_description/urdf/standard/turtlebot4.urdf.xacro`) control the camera's position and orientation, following ROS2 REP-103 conventions:
+The following parameters within the TurtleBot 4 URDF file (`/opt/ros/humble/share/turtlebot4_description/urdf/standard/turtlebot4.urdf.xacro`) (on the robot) control the camera's position and orientation, following ROS2 REP-103 conventions:
 
 - **`camera_mount_x_offset`:** Forward offset (X-axis) of the camera mount in meters.
 - **`camera_mount_y_offset`:** Left offset (Y-axis) of the camera mount in meters.

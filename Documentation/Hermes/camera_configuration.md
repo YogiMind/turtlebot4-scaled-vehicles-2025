@@ -38,7 +38,7 @@ The following parameters within the TurtleBot 4 URDF file (`/opt/ros/humble/shar
 
 4. **Save and reload:**
    - Save the modified URDF file.
-   - If your TurtleBot 4 is currently running, restart the relevant ROS nodes to apply the changes.
+   - Restart the robot. If changes dont apply, reinstall the robot upstart script in Turtlebot4-setup on the robot.  In terminal write Turtlebot4-setup then go to ros setup then go to robot upstart, then unisntsall and reinstall.
 
 ## Example: Camera Facing Forward and Downward
 

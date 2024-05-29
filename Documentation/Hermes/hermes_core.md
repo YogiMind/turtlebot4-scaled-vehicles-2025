@@ -1,6 +1,8 @@
-# Hermes_mapper
+# Hermes Core
 
 This ROS2 node generates a map based on point cloud data from a sensor (e.g., an OAK-D camera). It processes the point cloud, creates a map representation, and publishes it as an OccupancyGrid message. The map is built incrementally by accumulating point cloud data over time.
+
+Link to code: [hermes_core.py](../../Software/TurtleBot4/hermes/hermes/hermes_core.py) 
 
 ## Table of Contents
 
@@ -47,7 +49,7 @@ Parameters are configured directly in the `Hermes_mapper` class constructor:
 ## Usage
 
 1. **Launching:**
-   - After building, run the node using `ros2 launch hermes hermes_core.launch.py`
+   - After building, run the node using `ros2 launch hermes start_hermes.launch.py`
 2. **Saving the map:**
    - Publish a message with the string `'save'` to the `/hermes_cmd` topic.
 3. **Resetting the map:**

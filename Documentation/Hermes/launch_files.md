@@ -1,3 +1,16 @@
+
+
+
+Launch the following launch files to start hermes.
+
+1. start the depthCam.launch.py on the robot via "ros2 launch hermes depthCam.launch.py"
+2. Then launch start_hermes.launch.py on a computer via "ros2 launch hermes start_hermes.launch.py"
+3. To get navigation, launch nav2.launch.py via "ros2 launch hermes nav2.launch.py", we did this on a computer, but it might work on the robot as well.
+
+
+
+
+
 # depthCam.launch.py - ROS2 Launch File for OAK-D Camera
 
 This ROS2 launch file, `depthCam.launch.py`, initializes and configures the Oak-D camera driver to capture depth and RGB images.
@@ -87,7 +100,7 @@ Link to code: [nav2.launch.py](../../Software/TurtleBot4/hermes/launch/nav2.laun
 
 # start_hermes.launch.py - ROS2 Launch File for Hermes Robot
 
-This ROS2 launch file, `start_hermes.launch.py`, orchestrates the startup of various nodes and components for the Hermes robot.
+This ROS2 launch file, `start_hermes.launch.py`, orchestrates the startup of various nodes.
 
 Link to code: [start_hermes.launch.py](../../Software/TurtleBot4/hermes/launch/start_hermes.launch.py)
 

@@ -1,0 +1,5 @@
+<library path="road_navigate_cpp_core">
+  <class name="road_navigate_cpp::LaneCostmap" type="road_navigate_cpp::LaneCostmap" base_class_type="nav2_costmap_2d::Layer">
+    <description>Edit</description>
+  </class>
+</library>

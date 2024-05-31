@@ -11,6 +11,7 @@ To set up and quickly start using the TurtleBot4 with the Hermes system, we reco
 3.  **[Camera Configuration](/Documentation/Hermes/camera_configuration.md):** If you need to adjust the camera position or orientation, refer to the instructions in [Camera Configuration](/Documentation/Hermes/camera_configuration.md).
 4.  **[Launching Hermes](/Documentation/Hermes/launch_files.md):** Launch the Hermes system using the provided launch files. Detailed instructions can be found in [Launch Files (Hermes)](/Documentation/Hermes/launch_files.md).
 5.  **RViz:** Use RViz to visualize sensor data, maps, and other information from the TurtleBot 4 and Hermes system. Refer to the [RViz documentation](/Documentation/Software/RViz.md) for guidance.
+6. **[Tips & Tricks](/Documentation/TurtleBot4/Tips&Tricks.md)** If you want some tips and tricks such as how to make the TurtleBot charge faster, visit [Tips & Tricks](/Documentation/TurtleBot4/Tips&Tricks.md)
 
 ## Documentation
 

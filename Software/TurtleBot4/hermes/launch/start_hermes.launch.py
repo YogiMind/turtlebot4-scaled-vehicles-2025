@@ -7,37 +7,52 @@ from launch_ros.descriptions import ComposableNode
 from nav2_common.launch import RewrittenYaml
 
 from launch import LaunchDescription
-from launch.actions import (DeclareLaunchArgument, GroupAction,
-                            IncludeLaunchDescription)
+from launch.actions import (
+    DeclareLaunchArgument, 
+    GroupAction,
+    IncludeLaunchDescription,
+    OpaqueFunction
+)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
+ARGUMENTS = [
+    DeclareLaunchArgument(
+        "use_sim_time",
+        default_value="false",
+        choices=["true", "false"],
+        description="Use sim time",
+    ),
+    DeclareLaunchArgument(
+        "params_file",
+        default_value=PathJoinSubstitution(
+            [get_package_share_directory("hermes"), "config", "slam.yaml"]
+        ),
+        description="Nav2 parameters",
+    ),
+    DeclareLaunchArgument("namespace", default_value="", description="Robot namespace"),
+]
 
-def generate_launch_description():
-    # Declare the namespace as a launch argument so it can be set from command line
-    namespace_arg = DeclareLaunchArgument(
-        "namespace", default_value="", description="Namespace for the robot"
-    )
+
+def launch_setup(context, *args, **kwargs):
 
     namespace = LaunchConfiguration("namespace")
+    slam_params = LaunchConfiguration("params_file")
 
-    tb4_bringup = get_package_share_directory("turtlebot4_navigation")
-    ourPackage = get_package_share_directory("hermes")
+    namespace_str = namespace.perform(context)
+    if namespace_str and not namespace_str.startswith("/"):
+        namespace_str = "/" + namespace_str
 
-    slamPath = os.path.join(tb4_bringup, "launch", "slam.launch.py")
+    tb4_navigation = get_package_share_directory("turtlebot4_navigation")
 
-    pathToSlamPara = os.path.join(ourPackage, "config", "slam.yaml")
-
-    # namespaced_pathToSlamPara = RewrittenYaml(
-    #    source_file=pathToSlamPara,
-    #    root_key=namespace,
-    #    param_rewrites={},
-    #    convert_types=True)
+    launch_slam = os.path.join(tb4_navigation, "launch", "slam.launch.py")
 
     # Include SLAM launch file
-    slam = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(slamPath),
-        launch_arguments={"params": pathToSlamPara}.items(),
+    slam = (
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(launch_slam),
+            launch_arguments={"params": slam_params}.items(),
+        )
     )
 
     grouped_nodes = GroupAction(
@@ -50,12 +65,15 @@ def generate_launch_description():
                 name="hermes_core",
                 output="screen",
                 remappings=[
-                    ("/tf", "/glenn/tf"),
-                    ("/tf_static", "/glenn/tf_static"),
-                    ("/theDepth", "/glenn/theDepth"),
-                    ("/theIntensity", "/glenn/theIntensity"),
-                    ("/oakd/stereo/camera_info", "/glenn/oakd/stereo/camera_info"),
-                    ("/oakd/points", "/glenn/oakd/points"),
+                    ("/tf", namespace_str + "/tf"),
+                    ("/tf_static", namespace_str + "/tf_static"),
+                    ("/theDepth", namespace_str + "/theDepth"),
+                    ("/theIntensity", namespace_str + "/theIntensity"),
+                    (
+                        "/oakd/stereo/camera_info",
+                        namespace_str + "/oakd/stereo/camera_info",
+                    ),
+                    ("/oakd/points", namespace_str + "/oakd/points"),
                 ],
             ),
             Node(
@@ -64,10 +82,16 @@ def generate_launch_description():
                 name="depth_intensity_image_syncer",
                 output="screen",
                 remappings=[
-                    ("/theDepth", "/glenn/theDepth"),
-                    ("/theIntensity", "/glenn/theIntensity"),
-                    ("/oakd/right/image_rect", "/glenn/oakd/right/image_rect"),
-                    ("/oakd/stereo/image_raw", "/glenn/oakd/stereo/image_raw"),
+                    ("/theDepth", namespace_str + "/theDepth"),
+                    ("/theIntensity", namespace_str + "/theIntensity"),
+                    (
+                        "/oakd/right/image_rect",
+                        namespace_str + "/oakd/right/image_rect",
+                    ),
+                    (
+                        "/oakd/stereo/image_raw",
+                        namespace_str + "/oakd/stereo/image_raw",
+                    ),
                 ],
             ),
             ComposableNodeContainer(
@@ -92,9 +116,10 @@ def generate_launch_description():
             ),
         ]
     )
+    return [slam, grouped_nodes]
 
-    ld = LaunchDescription()
-    ld.add_action(namespace_arg)
-    ld.add_action(grouped_nodes)
-    ld.add_action(slam)
+
+def generate_launch_description():
+    ld = LaunchDescription(ARGUMENTS)
+    ld.add_action(OpaqueFunction(function=launch_setup))
     return ld

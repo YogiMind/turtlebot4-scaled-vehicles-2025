@@ -64,8 +64,10 @@ def generate_launch_description():
                 name="depth_intensity_image_syncer",
                 output="screen",
                 remappings=[
-                    ("theDepth", "/glenn/theDepth"),
-                    ("theIntensity", "/glenn/theIntensity"),
+                    ("/theDepth", "/glenn/theDepth"),
+                    ("/theIntensity", "/glenn/theIntensity"),
+                    ("/oakd/right/image_rect", "/glenn/oakd/right/image_rect"),
+                    ("/oakd/stereo/image_raw", "/glenn/oakd/stereo/image_raw"),
                 ],
             ),
             ComposableNodeContainer(

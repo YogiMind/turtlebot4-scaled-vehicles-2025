@@ -27,17 +27,17 @@ class CaptureRoad(Node):
         self.bridge = CvBridge()
         self.image_subscription = self.create_subscription(
             Image,
-            '/glenn/oakd/right/image_rect',
+            '/oakd/right/image_rect',
             self.rightImgCallBack,
             10)
         self.depth_subscription = self.create_subscription(
             Image,
-            '/glenn/oakd/stereo/image_raw',
+            '/oakd/stereo/image_raw',
             self.depthImgCallback,
             10)
         
-        self.intensity_publisher = self.create_publisher(Image, '/glenn/theIntensity', 10)
-        self.depth_publisher = self.create_publisher(Image, '/glenn/theDepth', 10)
+        self.intensity_publisher = self.create_publisher(Image, '/theIntensity', 10)
+        self.depth_publisher = self.create_publisher(Image, '/theDepth', 10)
         
 
         self.depthImgQueue = queue.Queue(maxsize=100)

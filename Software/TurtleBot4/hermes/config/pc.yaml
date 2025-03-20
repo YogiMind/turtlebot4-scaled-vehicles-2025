@@ -1,4 +1,4 @@
-/oakd:
+oakd:
   ros__parameters:
     camera:
       i_enable_imu: false
@@ -28,16 +28,13 @@
     right:
       i_resolution: '400P'
       i_fps: 15.0
-      i_board_socket_id: 2
+        #i_board_socket_id: 2
       i_publish_topic: true
 
     stereo:
       i_align_depth: true
       i_board_socket_id: 2
       i_subpixel: true
-      i_align_depth: false
-      i_publish_right_rect: true
+      i_publish_right_rect: true # behövs denna? Ser ut som den under
       i_right_rect_publish_topic: true
-      i_subpixel: false
     use_sim_time: false
-

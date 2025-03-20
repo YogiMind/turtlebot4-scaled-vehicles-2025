@@ -39,6 +39,7 @@ def generate_launch_description():
                         package='depthai_ros_driver',
                         plugin='depthai_ros_driver::Camera',
                         name='oakd',
+                        namespace=namespace,
                         parameters=[namespaced_param_file]
                     ),
             ],

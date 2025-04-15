@@ -16,6 +16,7 @@ from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSDurabilityPolicy
 import threading, queue
 import os
 from std_msgs.msg import String
+import array
 
 globalLogger = None
 
@@ -501,7 +502,8 @@ class MapServer():
         
         flattened_array = map.mapData.flatten()
         clamped_values = np.clip(flattened_array, -1, 100).astype(np.int8)
-        occupancy_grid.data = clamped_values.tolist()
+        occupancy_grid.data = array.array('b', clamped_values)
+
 
         return occupancy_grid
 
@@ -623,6 +625,8 @@ class Hermes_mapper(Node):
             self.get_logger().info("points:" + str(e-s))
             s = time.time()
             self.mapHandler.addPoints(points)
+
+
             e = time.time()
             self.get_logger().info("map:" + str(e-s))
         except Exception as e:

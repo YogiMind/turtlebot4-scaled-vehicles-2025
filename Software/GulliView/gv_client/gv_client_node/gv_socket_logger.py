@@ -9,8 +9,7 @@ import threading
 from socketserver import BaseRequestHandler, UDPServer
 from typing import Union, Optional, Generator
 
-from gullivutil import parse_packet
-
+from gv_client_node.gullivutil import parse_packet
 
 class Shutdown(Exception):
     """Raise to signal shutdown"""

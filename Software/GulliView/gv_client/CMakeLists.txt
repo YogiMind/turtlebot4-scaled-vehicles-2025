@@ -19,7 +19,17 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   DEPENDENCIES std_msgs
 )
 
-# 3) Export message runtime dependency
+# 3) Copy launch files to Install
+install(
+  DIRECTORY launch/
+  DESTINATION share/${PROJECT_NAME}/
+)
+install(
+  DIRECTORY gv_client_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+# 4) Export message runtime dependency
 ament_export_dependencies(rosidl_default_runtime)
 
 ament_package()

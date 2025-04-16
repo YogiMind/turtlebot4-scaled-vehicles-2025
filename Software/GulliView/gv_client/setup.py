@@ -1,11 +1,14 @@
 from setuptools import setup
+from glob import glob
+import os
 
-package_name = 'gv_client_node'  # matches your Python folder name
+package_name = 'gv_client'  # matches Ros project name
+py_package_name = 'gv_client_node'  # matches Python folder name
 
 setup(
-    name='gv_client',
-    version='0.1.0',
-    packages=[package_name],
+    name=package_name,
+    version='0.0.0',
+    packages=[py_package_name],
     package_dir={'': '.'},  # because gv_client_node is directly inside .
     install_requires=['setuptools'],
     zip_safe=True,
@@ -14,6 +17,10 @@ setup(
     description='GulliView client node for ROS2',
     license='MIT',
     tests_require=['pytest'],
+    data_files=[
+        (os.path.join('share', 'gv_client', 'launch'), glob('launch/*.launch.py')),
+        (os.path.join('share', 'gv_client'), ['package.xml']),
+    ],
     entry_points={
         'console_scripts': [
             'laptop_socket_server = gv_client_node.laptop_socket_server:main',

@@ -22,9 +22,9 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'laptop_socket_server = gv_client_node.laptop_socket_server:main',
-            'gv_socket_server = gv_client_node.gv_socket_server:main',
-            'gv_socket_logger = gv_client_node.gv_socket_logger:main',
+            'laptop_socket_server = gv_client.laptop_socket_server:main',
+            'gv_socket_server = gv_client.gv_socket_server:main',
+            'gv_socket_logger = gv_client.gv_socket_logger:main',
         ],
     },
 )

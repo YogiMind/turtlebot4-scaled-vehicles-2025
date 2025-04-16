@@ -8,7 +8,7 @@ from rclpy.node import Node
 from std_msgs.msg import Header
 
 from gv_interfaces.msg import GulliViewPosition
-from gv_client_node.gullivutil import parse_packet
+from gv_client.gullivutil import parse_packet
 
 GV_POSITION_TOPIC = "gv_positions"
 

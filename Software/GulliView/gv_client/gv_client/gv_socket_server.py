@@ -42,13 +42,13 @@ class GulliViewPacketHandler(BaseRequestHandler):
                 y=det.y,
                 theta=det.theta,
                 speed=det.speed,
-                tagId=det.tag_id,
-                cameraId=det.camera_id
+                tag_id=det.tag_id,
+                camera_id=det.camera_id
             )
 
             print(f'[*] Received position from UDP: ({det.x}, {det.y})')
 
-            if det.speed > 0.8:
+            if det.speed > 5:
                 print(f'[!] Safety cut-off, speed received: {det.speed}')
                 return
 

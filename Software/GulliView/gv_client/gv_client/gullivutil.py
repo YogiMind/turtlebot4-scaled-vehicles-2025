@@ -2,6 +2,7 @@ import logging
 import struct
 from collections import namedtuple
 from typing import NamedTuple, List
+import socket
 
 
 # Model GulliView packet components
@@ -57,4 +58,12 @@ if __name__ == '__main__':
     data = bytearray(header_data + d1 + d2)
     data = data.ljust(256, b'\x00')  # Pad with zero-bytes to length 256
 
+    # Send to UDP port 2121 on localhost
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.sendto(data, ('127.0.0.1', 2121))
+    sock.close()
+
+    print("Test packet sent to 127.0.0.1:2121")
+
     print(parse_packet(data))
+

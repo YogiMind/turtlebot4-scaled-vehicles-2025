@@ -5,8 +5,10 @@ import struct
 
 import rclpy
 from rclpy.node import Node
+from rclpy.time import Time
 from std_msgs.msg import Header
 
+from geometry_msgs import PoseWithCovarianceStamped
 from gv_interfaces.msg import GulliViewPosition
 from gv_client.gullivutil import parse_packet
 
@@ -30,27 +32,38 @@ class GulliViewPacketHandler(BaseRequestHandler):
         recv_buf = bytearray(self.request[0])
         packet = parse_packet(recv_buf)
 
+        timestamp = Time(seconds=packet.header.timestamp / 1000)
+
         for det in packet.detections:
             if self.listen_tag_id != "all" and det.tag_id != self.listen_tag_id:
                 continue
 
-            header = Header()
-            header.stamp = self.node.get_clock().now().to_msg()
-            msg = GulliViewPosition(
-                header=header,
-                x=det.x,
-                y=det.y,
-                theta=det.theta,
-                speed=det.speed,
-                tag_id=det.tag_id,
-                camera_id=det.camera_id
-            )
+            msg = PoseWithCovarianceStamped()
+
+            msg.header.stamp = timestamp.to_msg()
+            msg.header.frame_id = "world"
+
+            msg.pose.pose.position.x = det.x
+            msg.pose.pose.position.y = det.y
+            msg.pose.pose.position.z = 0.0
+
+            # q = quaternion_from_euler(0, 0, packet.theta)
+            # msg.pose.pose.orientation = Quaternion(x=q[0], y=q[1], z=q[2], w=q[3])
+
+
+            # Covariance (optional — tune based on system trust)
+            # 6x6 row-major covariance matrix (x, y, z, roll, pitch, yaw)
+            msg.pose.covariance = [
+                0.05, 0.0,  0.0,  0.0, 0.0, 0.0,  # x
+                0.0, 0.05, 0.0,  0.0, 0.0, 0.0,  # y
+                0.0, 0.0,  0.0,  0.0, 0.0, 0.0,  # z (no z info)
+                0.0, 0.0,  0.0,  0.0, 0.0, 0.0,  # roll
+                0.0, 0.0,  0.0,  0.0, 0.0, 0.0,  # pitch
+                0.0, 0.0,  0.0,  0.0, 0.0, 0.1   # yaw (theta)
+            ]
+
 
             print(f'[*] Received position from UDP: ({det.x}, {det.y})')
-
-            if det.speed > 5:
-                print(f'[!] Safety cut-off, speed received: {det.speed}')
-                return
 
             self.publisher.publish(msg)
 

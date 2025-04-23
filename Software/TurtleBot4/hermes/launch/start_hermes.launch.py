@@ -96,7 +96,7 @@ def launch_setup(context, *args, **kwargs):
             ),
             ComposableNodeContainer(
                 name="oakd_container_pc",
-                namespace=namespace,  # Will be overwritten by PushRosNamespace
+                namespace="",  # Will be overwritten by PushRosNamespace
                 package="rclcpp_components",
                 executable="component_container",
                 composable_node_descriptions=[

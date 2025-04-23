@@ -551,9 +551,9 @@ class Hermes_mapper(Node):
         mapRes = 0.02
         initMapSize = 20
 
-        pointCloudIntensityTrh = 190
-        visionRangeForward = 1.0
-        visionRangeSide = 0.55
+        pointCloudIntensityTrh = 160
+        visionRangeForward = 1.5
+        visionRangeSide = 0.6
 
         localMapSize = 1.6
         positionCenteredMapSize = 1.6

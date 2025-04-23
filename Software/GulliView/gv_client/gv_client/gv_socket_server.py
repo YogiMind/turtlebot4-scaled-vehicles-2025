@@ -8,7 +8,7 @@ from rclpy.node import Node
 from rclpy.time import Time
 from std_msgs.msg import Header
 
-from geometry_msgs import PoseWithCovarianceStamped
+from geometry_msgs.msg import PoseWithCovarianceStamped
 from geometry_msgs.msg import Quaternion
 import math
 
@@ -16,7 +16,7 @@ import math
 from gv_interfaces.msg import GulliViewPosition
 from gv_client.gullivutil import parse_packet
 
-GV_POSITION_TOPIC = "/raphael/gv_positions"
+GV_POSITION_TOPIC = "/raphael/gv_pose"
 
 
 def unpack_data(buf: bytearray, start: int) -> int:
@@ -39,7 +39,7 @@ class GulliViewPacketHandler(BaseRequestHandler):
         timestamp = Time(seconds=packet.header.timestamp / 1000)
 
         for det in packet.detections:
-            if self.listen_tag_id != "all" and det.tag_id != self.listen_tag_id:
+            if self.listen_tag_id != "all" and det.tag_id != int(self.listen_tag_id):
                 continue
 
             msg = PoseWithCovarianceStamped()
@@ -47,8 +47,8 @@ class GulliViewPacketHandler(BaseRequestHandler):
             msg.header.stamp = timestamp.to_msg()
             msg.header.frame_id = "map"
 
-            msg.pose.pose.position.x = det.x
-            msg.pose.pose.position.y = det.y
+            msg.pose.pose.position.x = det.x / 1298.0
+            msg.pose.pose.position.y = det.y / 1298.0
             msg.pose.pose.position.z = 0.0
 
             q = Quaternion()
@@ -76,7 +76,7 @@ class GulliViewPacketHandler(BaseRequestHandler):
             ]
 
 
-            print(f'[*] Received position from UDP: ({det.x}, {det.y})')
+            print(f'[*] Received position from UDP: Tag={det.tag_id}, Pose=({det.x}, {det.y})')
 
             self.publisher.publish(msg)
 
@@ -88,7 +88,7 @@ class GulliViewServerNode(Node):
 
         self.declare_parameter("host", "0.0.0.0")
         self.declare_parameter("port", 2121)
-        self.declare_parameter("tag_id", "8")
+        self.declare_parameter("tag_id", "all")
 
         host = self.get_parameter("host").get_parameter_value().string_value
         port = self.get_parameter("port").get_parameter_value().integer_value
@@ -96,7 +96,7 @@ class GulliViewServerNode(Node):
 
         topic = GV_POSITION_TOPIC
         self.get_logger().info(f"Setting up publisher on {topic}")
-        publisher = self.create_publisher(GulliViewPosition, topic, 10)
+        publisher = self.create_publisher(PoseWithCovarianceStamped, topic, 10)
 
         # Bind handler context
         GulliViewPacketHandler.node = self

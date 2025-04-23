@@ -11,6 +11,7 @@ from std_msgs.msg import Header
 from geometry_msgs.msg import PoseWithCovarianceStamped
 from geometry_msgs.msg import Quaternion
 import math
+import numpy as np
 
 
 from gv_interfaces.msg import GulliViewPosition
@@ -18,6 +19,12 @@ from gv_client.gullivutil import parse_packet
 
 GV_POSITION_TOPIC = "/raphael/gv_pose"
 
+CAMERA_CENTERS = {
+    0: (2643, 1664),
+    1: (2679, 3658),
+    2: (2619, 5887),
+    3: (2681, 7937)
+}
 
 def unpack_data(buf: bytearray, start: int) -> int:
     """Helper method to unpack big-endian uint32's from a buffer."""
@@ -58,23 +65,25 @@ class GulliViewPacketHandler(BaseRequestHandler):
 
 
 
-
             # Set covariance according to position?
-            # dx = robot_x - camera_centers[cam_id][0]
-            # dy = robot_y - camera_centers[cam_id][1]
-            # distance = np.sqrt(dx**2 + dy**2)
+            cam_x, cam_y = CAMERA_CENTERS[det.camera_id]
+            dx = det.x - cam_x
+            dy = det.y - cam_y
+            distance = np.sqrt(dx**2 + dy**2)
+
+            base_variance = 0.01  # small for close distances
+            scale_factor = 1e-6   # tune this experimentally
+
+            cov = base_variance + scale_factor * distance
 
             # Covariance (optional — tune based on system trust)
             # 6x6 row-major covariance matrix (x, y, z, roll, pitch, yaw)
-            msg.pose.covariance = [
-                0.05, 0.0,  0.0,  0.0, 0.0, 0.0,  # x
-                0.0, 0.05, 0.0,  0.0, 0.0, 0.0,  # y
-                0.0, 0.0,  0.0,  0.0, 0.0, 0.0,  # z (no z info)
-                0.0, 0.0,  0.0,  0.0, 0.0, 0.0,  # roll
-                0.0, 0.0,  0.0,  0.0, 0.0, 0.0,  # pitch
-                0.0, 0.0,  0.0,  0.0, 0.0, 0.1   # yaw (theta)
-            ]
+            cov_matrix = [0.0]*36
+            cov_matrix[0] = cov  # x variance
+            cov_matrix[7] = cov  # y variance
+            cov_matrix[35] = 0.1  # y variance
 
+            msg.pose.covariance = cov_matrix
 
             print(f'[*] Received position from UDP: Tag={det.tag_id}, Pose=({det.x}, {det.y})')
 

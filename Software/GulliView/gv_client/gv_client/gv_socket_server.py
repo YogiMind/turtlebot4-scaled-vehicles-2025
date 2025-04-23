@@ -9,10 +9,14 @@ from rclpy.time import Time
 from std_msgs.msg import Header
 
 from geometry_msgs import PoseWithCovarianceStamped
+from geometry_msgs.msg import Quaternion
+import math
+
+
 from gv_interfaces.msg import GulliViewPosition
 from gv_client.gullivutil import parse_packet
 
-GV_POSITION_TOPIC = "gv_positions"
+GV_POSITION_TOPIC = "/raphael/gv_positions"
 
 
 def unpack_data(buf: bytearray, start: int) -> int:
@@ -41,15 +45,24 @@ class GulliViewPacketHandler(BaseRequestHandler):
             msg = PoseWithCovarianceStamped()
 
             msg.header.stamp = timestamp.to_msg()
-            msg.header.frame_id = "world"
+            msg.header.frame_id = "map"
 
             msg.pose.pose.position.x = det.x
             msg.pose.pose.position.y = det.y
             msg.pose.pose.position.z = 0.0
 
-            # q = quaternion_from_euler(0, 0, packet.theta)
-            # msg.pose.pose.orientation = Quaternion(x=q[0], y=q[1], z=q[2], w=q[3])
+            q = Quaternion()
+            q.z = math.sin(det.theta / 2.0)
+            q.w = math.cos(det.theta / 2.0)
+            msg.pose.pose.orientation = q
 
+
+
+
+            # Set covariance according to position?
+            # dx = robot_x - camera_centers[cam_id][0]
+            # dy = robot_y - camera_centers[cam_id][1]
+            # distance = np.sqrt(dx**2 + dy**2)
 
             # Covariance (optional — tune based on system trust)
             # 6x6 row-major covariance matrix (x, y, z, roll, pitch, yaw)

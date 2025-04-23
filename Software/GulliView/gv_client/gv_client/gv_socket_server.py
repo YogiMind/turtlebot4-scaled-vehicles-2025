@@ -88,7 +88,7 @@ class GulliViewServerNode(Node):
 
         self.declare_parameter("host", "0.0.0.0")
         self.declare_parameter("port", 2121)
-        self.declare_parameter("tag_id", "all")
+        self.declare_parameter("tag_id", "8")
 
         host = self.get_parameter("host").get_parameter_value().string_value
         port = self.get_parameter("port").get_parameter_value().integer_value

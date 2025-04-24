@@ -14,7 +14,6 @@ import math
 import numpy as np
 
 
-from gv_interfaces.msg import GulliViewPosition
 from gv_client.gullivutil import parse_packet
 
 GV_POSITION_TOPIC = "/raphael/gv_pose"

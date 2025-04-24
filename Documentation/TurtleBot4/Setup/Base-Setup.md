@@ -29,7 +29,7 @@ Now, make sure to source your setup with `source /opt/ros/humble/setup.bash` and
 
 `echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main"` This command tells the system where to find the ROS packages. The `dpkg --print-architecture` and `$(. /etc/os-release && echo $UBUNTU_CODENAME)` command is used to get the system's architecture and codename of the installed Ubuntu version. 
 
-`| sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null` This ptakes the output from the echo command and writes it to the `/etc/apt/sources.list.d/ros2.list` file. The `tee` command is used to write to files with `sudo` privileges. The `> /dev/null` part discards the standard output of `tee`.
+`| sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null` This takes the output from the echo command and writes it to the `/etc/apt/sources.list.d/ros2.list` file. The `tee` command is used to write to files with `sudo` privileges. The `> /dev/null` part discards the standard output of `tee`.
 
 ## Turtlebot
 **Make sure you have set up ROS2 and that it's running properly before you proceed with these steps.** 

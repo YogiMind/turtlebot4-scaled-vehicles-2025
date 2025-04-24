@@ -30,7 +30,7 @@ Note that to be able to get the relevant data, you need to have enabled the sens
 #### Pointcloud2
 The Pointcloud2 display shows the pointcloud data as seen in the image below.  
 
-<img src="../../../Assets/Images/Turtlebot4/Software/Pointcloud_2_RViz.png" width="300">  
+<img src="../Assets/Images/Turtlebot4/Software/Pointcloud_2_RViz.png" width="300">  
 
 
 In the above image, the following settings are used: 
@@ -44,5 +44,6 @@ In the above image, the following settings are used:
 
 #### Map
 Example images: 
-<img src="/Assets/Images/Turtlebot4/Software/Map_RViz.png" width="300">  
-<img src="/Assets/Images/Turtlebot4/Software/Map_RViz2.png" width="300">  
+
+<img src="../Assets/Images/Turtlebot4/Software/Map_RViz.png" width="300">  
+<img src="../Assets/Images/Turtlebot4/Software/Map_RViz2.png" width="300">  

@@ -14,14 +14,14 @@ This will bring up a setup screen where you can add the credentials for the netw
 ## Configuring turtlebot4-setup
 Now, you need to set up the TurtleBot to use Discovery Server. Once you have run the ```turtlebot4-setup``` command, you will be greeted by the following screen.  
 
-<img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/TB4_Setup_1.png" width="400">
+<img src="../../Assets/Images/Turtlebot4/TurtleBot4-setup/TB4_Setup_1.png" width="400">
 
 ### ROS Setup
 Navigate to Discovery Server  
-<img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/TB4_Setup_2.png" width="400">  
+<img src="../../Assets/Images/Turtlebot4/TurtleBot4-setup/TB4_Setup_2.png" width="400">  
 
 Copy these settings   
-<img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/TB4_Setup_3.png" width="400"> 
+<img src="../../Assets/Images/Turtlebot4/TurtleBot4-setup/TB4_Setup_3.png" width="400"> 
 
 ### WiFi Setup
 Navigate back to the main setup menu (don't forget to save the settings) and go to WiFi-settings.  
@@ -32,7 +32,7 @@ Navigate back to the main setup menu (don't forget to save the settings) and go 
 `IP Adress` can remain empty  
 `DHCP` should be set to `True`
 
-<img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/TB4_Setup_4.png" width="400">
+<img src="../../Assets/Images/Turtlebot4/TurtleBot4-setup/TB4_Setup_4.png" width="400">
 
 #### **Don't forget to hit Save!**
 
@@ -46,17 +46,17 @@ Make sure that you have `Git` installed, otherwise, the script supplied will not
 Run `wget -qO - https://raw.githubusercontent.com/turtlebot/turtlebot4_setup/humble/turtlebot4_discovery/configure_discovery.sh | bash <(cat) </dev/tty` and follow the on-screen instructions. 
 
 1. Initial prompt  
-    <img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/Discovery_Setup_1.png" width="400">
+    <img src="../../Assets/Images/Turtlebot4/TurtleBot4-setup/Discovery_Setup_1.png" width="400">
 2. Enter IP-adress found on the Turtlebot's screen, hit enter until the `domain id` which should be a unique identifier (important for running more than one robot)  
-    <img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/Discovery_Setup_2.png" width="400">
+    <img src="../../Assets/Images/Turtlebot4/TurtleBot4-setup/Discovery_Setup_2.png" width="400">
 3. Source your bash by running `~/.bashrc`  
-    <img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/Discovery_Setup_3.png" width="400">
+    <img src="../../Assets/Images/Turtlebot4/TurtleBot4-setup/Discovery_Setup_3.png" width="400">
 
 4. Test that everything has been successfully set up by running `ip route`  
-    <img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/Discovery_Setup_4.png" width="400">
+    <img src="../../Assets/Images/Turtlebot4/TurtleBot4-setup/Discovery_Setup_4.png" width="400">
 
 5. Run `ros2 daemon stop; ros2 daemon start` then run `ros2 topic list` and you should get a long list of topics. Sometimes, you'll need to run it twice before all topics show up.  
-    <img src="../../Assets/Images/TurtleBot4/TurtleBot4-setup/Discovery_Setup_6.png" width="400">  
+    <img src="../../Assets/Images/Turtlebot4/TurtleBot4-setup/Discovery_Setup_6.png" width="400">  
 
 
 ## Read More

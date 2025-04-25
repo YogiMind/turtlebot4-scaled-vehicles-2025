@@ -80,7 +80,7 @@ class GulliViewPacketHandler(BaseRequestHandler):
             cov_matrix = [0.0]*36
             cov_matrix[0] = cov  # x variance
             cov_matrix[7] = cov  # y variance
-            cov_matrix[35] = 0.1  # y variance
+            cov_matrix[35] = 0.1  # theta variance
 
             msg.pose.covariance = cov_matrix
 

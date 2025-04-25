@@ -57,9 +57,12 @@ class GulliViewPacketHandler(BaseRequestHandler):
             msg.pose.pose.position.y = det.y / 1298.0
             msg.pose.pose.position.z = 0.0
 
+            
+            theta = - det.theta # Increase in theta -> counter clockwise rotation
+
             q = Quaternion()
-            q.z = math.sin(det.theta / 2.0)
-            q.w = math.cos(det.theta / 2.0)
+            q.z = math.sin(theta / 2.0)
+            q.w = math.cos(theta / 2.0)
             msg.pose.pose.orientation = q
 
 

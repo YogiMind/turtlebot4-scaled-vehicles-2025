@@ -9,14 +9,22 @@ import socket
 Header = namedtuple('Header', ['type', 'subtype', 'seq', 'timestamp', 'unused', 'unused2', 'length'])
 Detection = namedtuple('Detection', ['tag_id', 'x', 'y', 'theta', 'speed', 'camera_id'])
 
+Detection2025 = namedtuple('Detection', ['tag_id', 'time_msec', 'x', 'y', 'theta', 'speed', 'camera_id'])
+
+class Packet2025(NamedTuple):
+    header: Header
+    detections: List[Detection2025]
+
 class Packet(NamedTuple):
     header: Header
     detections: List[Detection]
 
 # '>' = big endian, 'I' = u32, 'Q' = u64, 'f' = float
 HEADER_FORMAT = '>IIIQQII'
-DETECTION_FORMAT = '>IIIffI'
+DETECTION_FORMAT= '>IIIffI'
 
+DETECTION_FORMAT_2025  = '>IQIIffI'
+# Inte hållbart
 
 def parse_packet(binary_data: bytearray) -> Packet:
     """
@@ -47,6 +55,35 @@ def parse_packet(binary_data: bytearray) -> Packet:
 
     return Packet(header=header, detections=detections)
 
+def parse_packet2025(binary_data: bytearray) -> Packet2025:
+    """
+    Populate a datastructure from unpacking a GulliView position packet
+
+    :param binary_data: Bytearray of data, should be 256 bytes in size
+    :return: Packet tuple containing parsed headers and detections from packet
+    """
+
+    # Kolla vilken längd paketen är
+    if len(binary_data) != 256:
+        raise ValueError("GulliView packet must contain 256 bytes of data")
+
+    header = Header._make(struct.unpack_from(HEADER_FORMAT, binary_data))
+
+    logging.debug(f"Received packet with header: {header}")
+
+    if header.type != 1:
+        raise ValueError(f"Received unexpected GulliView packet type '{header.type}'")
+    if header.subtype != 2:
+        raise ValueError(f"Received unexpected GulliView packet subtype '{header.subtype}'")
+
+    detections: List[Detection2025] = []
+    offset = struct.calcsize(HEADER_FORMAT)
+    for _ in range(header.length):
+        detection = Detection2025._make(struct.unpack_from(DETECTION_FORMAT_2025, binary_data, offset=offset))
+        detections.append(detection)
+        offset += struct.calcsize(DETECTION_FORMAT_2025)
+
+    return Packet2025(header=header, detections=detections)
 
 if __name__ == '__main__':
     # Test packing & unpacking data

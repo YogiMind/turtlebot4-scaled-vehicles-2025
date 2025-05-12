@@ -25,6 +25,7 @@ setup(
             'laptop_socket_server = gv_client.laptop_socket_server:main',
             'gv_socket_server = gv_client.gv_socket_server:main',
             'gv_socket_logger = gv_client.gv_socket_logger:main',
+            'gv_client_2025 = gv_client.gv_client_2025:main',
         ],
     },
 )

@@ -24,12 +24,7 @@ setup(
         'console_scripts': [            
             'hermes_core = hermes.hermes_core:main',
             'depth_intensity_image_syncer = hermes.depth_intensity_image_syncer:main',
-<<<<<<< Updated upstream
             'lawnmower = hermes.lawnmower:main',
-=======
-            'road_path_planner = hermes.road_path_planner:main',
-            'lawnmower = hermes.lawnmower:main'
->>>>>>> Stashed changes
         ],
     },
 )

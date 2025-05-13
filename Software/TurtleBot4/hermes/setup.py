@@ -24,6 +24,7 @@ setup(
         'console_scripts': [            
             'hermes_core = hermes.hermes_core:main',
             'depth_intensity_image_syncer = hermes.depth_intensity_image_syncer:main',
+            'lawnmower = hermes.lawnmower:main',
         ],
     },
 )

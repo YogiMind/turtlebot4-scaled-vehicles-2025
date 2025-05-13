@@ -140,10 +140,16 @@ class TransfromPointCloudPostProcessor(PointCloudPostProcessor):
         #filter = cloudPoints[:, 3] > 175
         #cloudPoints = cloudPoints[filter]
 
+
         pointsXYZ = cloudPoints[:, [0,1,2]]
 
         basePointsXYZ = transform_points(pointsXYZ, camToBaseTransfrom)
         basePointsXYZI = np.hstack((basePointsXYZ, cloudPoints[:, 3].reshape(-1, 1)))
+
+        #Ta bara punkterna som är vid golvet +- 5 cm
+        z = basePointsXYZI[:,2]
+        keep = (z > -0.05) & (z < +0.05)
+        basePointsXYZI = basePointsXYZI[keep]
 
         filter = basePointsXYZI[:,0] < self.visionRange
         basePointsXYZI = basePointsXYZI[filter]
@@ -551,9 +557,9 @@ class Hermes_mapper(Node):
         mapRes = 0.02
         initMapSize = 20
 
-        pointCloudIntensityTrh = 190
-        visionRangeForward = 1.0
-        visionRangeSide = 0.55
+        pointCloudIntensityTrh = 160 #190
+        visionRangeForward = 1.0 #1.0
+        visionRangeSide = 0.6 #0.55
 
         localMapSize = 1.6
         positionCenteredMapSize = 1.6

@@ -13,6 +13,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/LaptopSpeed.msg"
   "msg/GulliViewPosition.msg"
+  "msg/GulliViewPosition2.msg"
   DEPENDENCIES std_msgs
 )
 

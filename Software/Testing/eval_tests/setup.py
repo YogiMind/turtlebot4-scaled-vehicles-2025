@@ -20,6 +20,7 @@ setup(
         'console_scripts': [
                 'pose_controller = eval_tests.pose_controller:main',
                 'pose_recorder = eval_tests.pose_recorder:main',
+                'go_to_pose = eval_tests.go_to_pose:main',
         ],
     },
 )

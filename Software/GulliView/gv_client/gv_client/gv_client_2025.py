@@ -16,7 +16,8 @@ import numpy as np
 
 from gv_client.gullivutil import parse_packet2025
 
-GV_POSITION_TOPIC = "/raphael/gv_pose"
+namespace = "/glenn"
+GV_POSITION_TOPIC = namespace + "/gv_pose"
 
 CAMERA_CENTERS = {
     0: (2643, 1664),

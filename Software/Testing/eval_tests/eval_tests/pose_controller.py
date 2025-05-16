@@ -1,4 +1,3 @@
-# go_to_pose.py
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import PoseWithCovarianceStamped, Twist
@@ -19,12 +18,16 @@ class GoToPose(Node):
     def __init__(self):
         super().__init__('go_to_pose')
         
-        # List of predefined positions (x, y, yaw in degrees)
+        # List of predefined positions (x, y)
+        # (8144, 1573) (6928, 1388)
+        # (1632, 1536) (955, 1351)
+        # (1727, 4465) (1036, 3779)
+        # (8194, 4469) (7039, 3859)
         self.targets = [
-            (8729, 3184, 90.0),
-            (1.0, 0.0, 90.0),
-            (1.0, 1.0, 180.0),
-            (0.0, 1.0, -90.0),
+            (8144, 1573),
+            (1632, 1536),
+            (1727, 4465),
+            (8194, 4469),
         ]
 
         self.declare_parameter('target_id', 0)
@@ -32,11 +35,10 @@ class GoToPose(Node):
 
 
         if 0 <= target_id < len(self.targets):
-            x, y, yaw_deg = self.targets[target_id]
+            x, y = self.targets[target_id]
             self.target_x = x
             self.target_y = y
-            self.target_yaw = math.radians(yaw_deg)
-            self.get_logger().info(f"Going to target {target_id}: ({x}, {y}, {yaw_deg}°)")
+            self.get_logger().info(f"Going to target {target_id}: ({x}, {y})")
         else:
             self.get_logger().error("Invalid target_id parameter!")
             rclpy.shutdown()
@@ -74,11 +76,8 @@ class GoToPose(Node):
     
         cmd = Twist()
     
-        # Normalize yaw error to target orientation
-        yaw_error = math.atan2(math.sin(self.target_yaw - yaw), math.cos(self.target_yaw - yaw))
-    
         # --- Case 1: Positioning ---
-        if distance > 0.03:
+        if distance > 3:
             # Smooth speed near goal
             linear_speed = max(min_linear_speed, min(max_linear_speed, distance * 0.5))
             angular_speed = max(min_angular_speed, min(max_angular_speed, abs(angle_error) * 1.5))

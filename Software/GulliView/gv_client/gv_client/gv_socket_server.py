@@ -5,13 +5,25 @@ import struct
 
 import rclpy
 from rclpy.node import Node
+from rclpy.time import Time
 from std_msgs.msg import Header
 
-from gv_interfaces.msg import GulliViewPosition
+from geometry_msgs.msg import PoseWithCovarianceStamped
+from geometry_msgs.msg import Quaternion
+import math
+import numpy as np
+
+
 from gv_client.gullivutil import parse_packet
 
-GV_POSITION_TOPIC = "gv_positions"
+GV_POSITION_TOPIC = "/raphael/gv_pose"
 
+CAMERA_CENTERS = {
+    0: (2643, 1664),
+    1: (2679, 3658),
+    2: (2619, 5887),
+    3: (2681, 7937)
+}
 
 def unpack_data(buf: bytearray, start: int) -> int:
     """Helper method to unpack big-endian uint32's from a buffer."""
@@ -30,27 +42,52 @@ class GulliViewPacketHandler(BaseRequestHandler):
         recv_buf = bytearray(self.request[0])
         packet = parse_packet(recv_buf)
 
+        timestamp = Time(seconds=packet.header.timestamp / 1000)
+
         for det in packet.detections:
-            if self.listen_tag_id != "all" and det.tag_id != self.listen_tag_id:
+            if self.listen_tag_id != "all" and det.tag_id != int(self.listen_tag_id):
                 continue
 
-            header = Header()
-            header.stamp = self.node.get_clock().now().to_msg()
-            msg = GulliViewPosition(
-                header=header,
-                x=det.x,
-                y=det.y,
-                theta=det.theta,
-                speed=det.speed,
-                tag_id=det.tag_id,
-                camera_id=det.camera_id
-            )
+            msg = PoseWithCovarianceStamped()
 
-            print(f'[*] Received position from UDP: ({det.x}, {det.y})')
+            msg.header.stamp = timestamp.to_msg()
+            msg.header.frame_id = "map"
 
-            if det.speed > 5:
-                print(f'[!] Safety cut-off, speed received: {det.speed}')
-                return
+            msg.pose.pose.position.x = det.x / 1298.0
+            msg.pose.pose.position.y = det.y / 1298.0
+            msg.pose.pose.position.z = 0.0
+
+            
+            theta = - det.theta # Increase in theta -> counter clockwise rotation
+
+            q = Quaternion()
+            q.z = math.sin(theta / 2.0)
+            q.w = math.cos(theta / 2.0)
+            msg.pose.pose.orientation = q
+
+
+
+            # Set covariance according to position?
+            cam_x, cam_y = CAMERA_CENTERS[det.camera_id]
+            dx = det.x - cam_x
+            dy = det.y - cam_y
+            distance = np.sqrt(dx**2 + dy**2)
+
+            base_variance = 0.01  # small for close distances
+            scale_factor = 1e-6   # tune this experimentally
+
+            cov = base_variance + scale_factor * distance
+
+            # Covariance (optional — tune based on system trust)
+            # 6x6 row-major covariance matrix (x, y, z, roll, pitch, yaw)
+            cov_matrix = [0.0]*36
+            cov_matrix[0] = cov  # x variance
+            cov_matrix[7] = cov  # y variance
+            cov_matrix[35] = 0.1  # theta variance
+
+            msg.pose.covariance = cov_matrix
+
+            print(f'[*] Received position from UDP: Tag={det.tag_id}, Pose=({det.x}, {det.y})')
 
             self.publisher.publish(msg)
 
@@ -70,7 +107,7 @@ class GulliViewServerNode(Node):
 
         topic = GV_POSITION_TOPIC
         self.get_logger().info(f"Setting up publisher on {topic}")
-        publisher = self.create_publisher(GulliViewPosition, topic, 10)
+        publisher = self.create_publisher(PoseWithCovarianceStamped, topic, 10)
 
         # Bind handler context
         GulliViewPacketHandler.node = self

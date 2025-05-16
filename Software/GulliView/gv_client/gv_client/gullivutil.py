@@ -14,7 +14,7 @@ class Packet(NamedTuple):
     detections: List[Detection]
 
 
-Detection2025 = namedtuple('Detection', ['tag_id', 'time_msec', 'x', 'y', 'theta', 'speed', 'camera_id'])
+Detection2025 = namedtuple('Detection', ['tag_id', 'time_msec', 'x', 'y', 'z', 'theta', 'speed', 'camera_id'])
 
 class Packet2025(NamedTuple):
     header: Header
@@ -24,7 +24,7 @@ class Packet2025(NamedTuple):
 # '>' = big endian, 'I' = u32, 'Q' = u64, 'f' = float
 HEADER_FORMAT = '>IIIQQII'
 DETECTION_FORMAT= '>IIIffI'
-DETECTION_FORMAT_2025  = '>IQIIffI'
+DETECTION_FORMAT_2025  = '>IQIIIffI'
 # Inte hållbart
 
 

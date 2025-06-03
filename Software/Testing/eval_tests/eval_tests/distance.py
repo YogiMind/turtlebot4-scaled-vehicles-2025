@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 # GulliView 2023
@@ -52,7 +53,8 @@ test_6 = np.array([
 
 
 # --- Test datasets (GV_mm_x, GV_mm_y, SLAM_x, SLAM_y) ---
-tests = [test_1, test_2, test_3, test_4, test_5, test_6]
+tests23 = [test_1, test_2, test_3]
+tests25 = [test_4, test_5, test_6]
 
 # --- Actual physical distance (ground truth) ---
 actual_distance = np.array([6.0, 2.5, 6.0, 2.5])  # meters
@@ -64,48 +66,68 @@ def segment_distances(positions):
 # --- Store summary stats ---
 summary = []
 
-print("=======================================")
-for i, test in enumerate(tests, 1):
-    gv_mm = test[:, :2]   # first 2 columns
-    slam_m = test[:, 2:]  # last 2 columns
-    gv_m = gv_mm / 1000.0
 
-    dist_gv = segment_distances(gv_m)
-    dist_slam = segment_distances(slam_m)
+def compute_errors(tests):
+    gv_errors = []
+    slam_errors = []
+    for test in tests:
+        slam = test[:, 2:]
+        gv = test[:, :2] / 1000.0
 
-    total_actual = np.sum(actual_distance)
-    total_gv = np.sum(dist_gv)
-    total_slam = np.sum(dist_slam)
-    total_gv_error = abs(total_gv - total_actual)
-    total_slam_error = abs(total_slam - total_actual)
-    avg_gv_segment_error = np.mean(abs(dist_gv - actual_distance))
-    avg_slam_segment_error = np.mean(abs(dist_slam - actual_distance))
+        slam_dist = segment_distances(slam)
+        gv_dist = segment_distances(gv)
 
-    summary.append([
-        i, total_gv, total_slam, total_gv_error, total_slam_error,
-        avg_gv_segment_error, avg_slam_segment_error
-    ])
+        gv_pct_error = 100 * np.abs(gv_dist - actual_distance) / actual_distance
+        slam_pct_error = 100 * np.abs(slam_dist - actual_distance) / actual_distance
 
-    print(f"\n=== Test {i} ===")
-    print("Segment\tActual(m)\tGV (m)\t\tSLAM (m)\tGV Error\tSLAM Error")
-    for j in range(len(actual_distance)):
-        err_gv = abs(dist_gv[j] - actual_distance[j])
-        err_slam = abs(dist_slam[j] - actual_distance[j])
-        print(f"{j+1}\t{actual_distance[j]:.2f}\t\t{dist_gv[j]:.3f}\t\t{dist_slam[j]:.3f}\t\t{err_gv:.3f}\t\t{err_slam:.3f}")
+        gv_errors.append(gv_pct_error)
+        slam_errors.append(slam_pct_error)
 
-    print(f"\nTotal:  {total_actual:.2f} m\tGV: {total_gv:.3f} m\tSLAM: {total_slam:.3f} m")
-    print(f"Total GV error: {total_gv_error:.3f} m")
-    print(f"Total SLAM error: {total_slam_error:.3f} m")
-print("=======================================\n")
+    gv_errors = np.array(gv_errors)
+    slam_errors = np.array(slam_errors)
 
-# --- Final Summary Table ---
-print("========== SUMMARY ==========")
-print("Test\tGV Total\tSLAM Total\tGV Err\tSLAM Err\tGV AvgSegErr\tSLAM AvgSegErr")
-for row in summary:
-    test_id, gv_total, slam_total, gv_err, slam_err, avg_gv_seg, avg_slam_seg = row
-    print(f"{test_id}\t{gv_total:.3f}\t\t{slam_total:.3f}\t\t{gv_err:.3f}\t{slam_err:.3f}\t\t{avg_gv_seg:.3f}\t\t{avg_slam_seg:.3f}")
+    mean_gv_errors = np.mean(gv_errors, axis=0)
+    mean_slam_errors = np.mean(slam_errors, axis=0)
 
-# --- Optional: compute averages over all tests ---
-summary_np = np.array(summary)
-avg_row = np.mean(summary_np[:, 1:], axis=0)
-print("\nAvg\t{:.3f}\t\t{:.3f}\t\t{:.3f}\t{:.3f}\t\t{:.3f}\t\t{:.3f}".format(*avg_row))
+    total_gv_error = np.mean(gv_errors)
+    total_slam_error = np.mean(slam_errors)
+
+    return mean_gv_errors, mean_slam_errors, total_gv_error, total_slam_error
+
+# Compute
+gv23_err, slam23_err, gv23_total, slam23_total = compute_errors(tests23)
+gv25_err, slam25_err, gv25_total, slam25_total = compute_errors(tests25)
+
+# Add "Total" to segment labels and error arrays
+segments = [f"Segment {i+1}" for i in range(len(actual_distance))] + ["Totala sträckan"]
+gv23_plot = np.append(gv23_err, gv23_total)
+slam23_plot = np.append(slam23_err, slam23_total)
+gv25_plot = np.append(gv25_err, gv25_total)
+slam25_plot = np.append(slam25_err, slam25_total)
+
+x = np.arange(len(segments))
+width = 0.35
+
+# --- Plot for GV 2023 ---
+plt.figure(figsize=(10, 5))
+plt.bar(x - width/2, gv23_plot, width, label='GulliView 2023')
+plt.bar(x + width/2, slam23_plot, width, label='SLAM')
+plt.xticks(x, segments)
+plt.ylabel('Procentuell Avvikelse (%)')
+plt.legend()
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.ylim(0, 18)
+plt.tight_layout()
+plt.show()
+
+# --- Plot for GV 2025 ---
+plt.figure(figsize=(10, 5))
+plt.bar(x - width/2, gv25_plot, width, label='GulliView 2025')
+plt.bar(x + width/2, slam25_plot, width, label='SLAM')
+plt.xticks(x, segments)
+plt.ylabel('Procentuell avvikelse (%)')
+plt.legend()
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.ylim(0, 18)
+plt.tight_layout()
+plt.show()

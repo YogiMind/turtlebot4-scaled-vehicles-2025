@@ -54,8 +54,8 @@ class GulliViewPacketHandler(BaseRequestHandler):
             msg.header.stamp = timestamp.to_msg()
             msg.header.frame_id = "map"
 
-            msg.pose.pose.position.x = det.x / 1298.0
-            msg.pose.pose.position.y = det.y / 1298.0
+            msg.pose.pose.position.x = det.x
+            msg.pose.pose.position.y = det.y
             msg.pose.pose.position.z = 0.0
 
             
